@@ -11,6 +11,6 @@ do
     fi
 done
 
-./vendor/bin/phpdoc.php -q
+./vendor/bin/phpdoc.php
 ./vendor/bin/apigen.php --config ./apigen.neon
 ./vendor/bin/phpunit -c ./phpunit.dist.xml

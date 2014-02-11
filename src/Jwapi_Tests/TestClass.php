@@ -28,4 +28,28 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         $this->assertEquals($class->getPath(), $url['path']);
     }
 
+    protected function checkMd5(Api $class, $url)
+    {
+        parse_str($url['query'], $query);
+        ksort($query);
+
+        $signature = '';
+        foreach($query as $key => $val) {
+            if ($key == 'api_signature') continue;
+            $signature .= $val;
+        }
+
+        $this->assertEquals($query['api_signature'], sha1($signature . $this->getApiSecret()));
+
+    }
+
+    protected function checkUrlValues($url, $values)
+    {
+        parse_str($url['query'], $query);
+        foreach($values as $key => $val) {
+            $this->assertArrayHasKey($key, $query);
+            $this->assertEquals($query[$key], $val);
+        }
+    }
+
 } 

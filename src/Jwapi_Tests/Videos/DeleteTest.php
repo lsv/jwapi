@@ -26,12 +26,14 @@ class DeleteTest extends TestClass
                 ->send(false)
                 ->getEffectiveUrl()
         );
-        
-        parse_str($url['query'], $query);
+
+        $values = array(
+            'video_key' => 'foobarvideo'
+        );
+        $this->checkUrlValues($url, $values);
 
         $this->checkUrl($this->getDeleteClass(), $url);
-        $this->assertEquals('foobarvideo', $query['video_key']);
-
+        $this->checkMd5($this->getDeleteClass(), $url);
 
 
     }

@@ -17,6 +17,10 @@ namespace Jwapi\Traits;
 trait Tags
 {
 
+    /**
+     * Tags
+     * @var array
+     */
     protected $tags = array();
 
     /**

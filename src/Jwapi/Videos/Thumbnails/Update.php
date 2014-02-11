@@ -23,7 +23,15 @@ class Update extends Api
     use Traits\VideoKey;
     use Traits\Fileupload;
 
-    protected $url = '/videos/thumbnails/update';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/thumbnails/update';
+
+    /**
+     * File upload key
+     * @var string
+     */
     protected $fileupload = 'thumbnail';
 
     /**
@@ -92,6 +100,7 @@ class Update extends Api
     }
 
     /**
+     * {@inherit}
      * @throws \Exception
      */
     protected function beforeRun()

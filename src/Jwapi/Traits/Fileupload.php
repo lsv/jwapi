@@ -20,7 +20,16 @@ use Symfony\Component\Finder\SplFileInfo;
 trait Fileupload
 {
 
+    /**
+     * Fileupload key
+     * @var string
+     */
     protected $fileupload = '';
+
+    /**
+     * File
+     * @var SplFileInfo
+     */
     protected $file;
 
     /**
