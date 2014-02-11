@@ -1,0 +1,8 @@
+source: ./src/Jwapi
+destination: ./build/doc2
+title: JW Api
+accessLevels: [public]
+report: ./build/logs/apigen.log
+php: No
+templateConfig: './vendor/apigen/apigen/templates/bootstrap/config.neon'
+quiet: Yes

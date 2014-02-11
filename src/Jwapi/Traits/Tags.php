@@ -1,17 +1,30 @@
 <?php
-
-
+/**
+ * This file is part of JW API.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @author Martin Aarhof <martin.aarhof@gmail.com>
+ */
 namespace Jwapi\Traits;
 
-
+/**
+ * Class Tags
+ * @package Jwapi\Traits
+ */
 trait Tags
 {
 
     protected $tags = array();
 
     /**
+     * (optional)
+     * Set multiple tags
+     *
      * @param array $tags
-     * @return $this
+     * @return Tags
      */
     public function setTags(array $tags)
     {
@@ -22,8 +35,11 @@ trait Tags
     }
 
     /**
+     * (optional)
+     * Add a single tag
+     *
      * @param string $tag
-     * @return $this
+     * @return Tags
      */
     public function addTag($tag)
     {

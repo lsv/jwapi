@@ -8,19 +8,21 @@
  * @license http://opensource.org/licenses/MIT
  * @author Martin Aarhof <martin.aarhof@gmail.com>
  */
-namespace Jwapi\Videos;
-
-use Jwapi\Api\Api;
-use Jwapi\Traits;
+namespace Jwapi;
 
 /**
- * Show the properties of a given video.
- * @package Jwapi\Videos
+ * Search
+ * @package Jwapi
  */
-class Show extends Api
+class Search
 {
-    use Traits\VideoKey;
 
-    protected $url = '/videos/show';
+    /**
+     * @return string
+     */
+    protected function __toString()
+    {
+        return '';
+    }
 
-}
+} 

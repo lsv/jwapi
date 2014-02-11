@@ -1,12 +1,32 @@
 <?php
+/**
+ * This file is part of JW API.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @author Martin Aarhof <martin.aarhof@gmail.com>
+ */
 namespace Jwapi\Api;
 
 use Symfony\Component\Finder\SplFileInfo;
 
+/**
+ * Our second level requester
+ * @package Jwapi\Api
+ */
 class Upload extends Api
 {
     protected $url;
 
+    /**
+     * Create our second level request for posting items
+     *
+     * @param Api $api
+     * @param SplFileInfo $file
+     * @param bool $method
+     */
     public function __construct(Api $api, SplFileInfo $file, $method)
     {
         $data = $api->getResponse()->json();

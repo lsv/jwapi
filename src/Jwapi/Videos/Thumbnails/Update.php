@@ -1,10 +1,23 @@
 <?php
+/**
+ * This file is part of JW API.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @author Martin Aarhof <martin.aarhof@gmail.com>
+ */
 namespace Jwapi\Videos\Thumbnails;
 
 use Jwapi\Api\Api;
 use Symfony\Component\Finder\SplFileInfo;
 use Jwapi\Traits;
 
+/**
+ * Update a video’s thumbnail by either setting a frame from the video or uploading an image.
+ * @package Jwapi\Videos\Thumbnails
+ */
 class Update extends Api
 {
     use Traits\VideoKey;
@@ -14,8 +27,11 @@ class Update extends Api
     protected $fileupload = 'thumbnail';
 
     /**
+     * (optional)
+     * Video frame position in seconds from which thumbnail should be generated. Seconds can be given as a whole number (e.g: 7) or with the fractions (e.g.: 7.42).
+     *
      * @param float $position
-     * @return $this
+     * @return Update
      */
     public function setPosition($position)
     {
@@ -24,8 +40,11 @@ class Update extends Api
     }
 
     /**
+     * (optional)
+     * Index of the image in the thumbnail strip to use as a video thumbnail. Thumbnail index starts from 1.
+     *
      * @param integer $index
-     * @return $this
+     * @return Update
      */
     public function setThumbnailIndex($index)
     {
@@ -33,6 +52,13 @@ class Update extends Api
         return $this;
     }
 
+    /**
+     * (optional)
+     * Set the thumbnail file
+     *
+     * @param SplFileInfo $file
+     * @return Update
+     */
     public function setImageFile(SplFileInfo $file)
     {
         $this->file = $file;
@@ -40,8 +66,11 @@ class Update extends Api
     }
 
     /**
+     * (optional)
+     * Thumbnail file MD5 message digest. If supplied, it will be checked by the API.
+     *
      * @param string $md5
-     * @return $this
+     * @return Update
      */
     public function setMd5($md5)
     {
@@ -50,8 +79,11 @@ class Update extends Api
     }
 
     /**
+     * (optional)
+     * Thumbnail file size. If supplied, it will be checked by the API.
+     *
      * @param integer $size
-     * @return $this
+     * @return Update
      */
     public function setSize($size)
     {
@@ -59,7 +91,10 @@ class Update extends Api
         return $this;
     }
 
-    public function beforeRun()
+    /**
+     * @throws \Exception
+     */
+    protected function beforeRun()
     {
         if (! $this->issetGet('position') && ! $this->file instanceof SplFileInfo) {
             throw new \Exception('Update thumbnail: Either file or position is set');

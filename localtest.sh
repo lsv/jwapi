@@ -1,5 +1,5 @@
 #!/bin/bash
-DIRS=("coverage" "logs" "documentation")
+DIRS=("coverage" "logs" "documentation" "doc2")
 
 for i in "${DIRS[@]}"
 do
@@ -11,9 +11,6 @@ do
     fi
 done
 
-echo ""
-echo ""
-echo Starting unit test!
-echo ""
-echo ""
-vendor/bin/phpunit -c ./phpunit.dist.xml
+./vendor/bin/phpdoc.php -q
+./vendor/bin/apigen.php --config ./apigen.neon
+./vendor/bin/phpunit -c ./phpunit.dist.xml

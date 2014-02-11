@@ -1,11 +1,24 @@
 <?php
+/**
+ * This file is part of JW API.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @author Martin Aarhof <martin.aarhof@gmail.com>
+ * @package Jwapi
+ */
 namespace Jwapi\Videos;
 
 use Jwapi\Api\Api;
 use Symfony\Component\Finder\SplFileInfo;
-
 use Jwapi\Traits;
 
+/**
+ * Create a new video by sending metadata and either a download url or file upload
+ * @package Jwapi\Videos
+ */
 class Create extends Api
 {
     use Traits\Tags;
@@ -17,8 +30,11 @@ class Create extends Api
     private $customParameters = array();
 
     /**
+     * (optional)
+     * Title of the video.
+     *
      * @param string $title
-     * @return $this
+     * @return Create
      */
     public function setTitle($title)
     {
@@ -27,8 +43,11 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Description of the video.
+     *
      * @param string $description
-     * @return $this
+     * @return Create
      */
     public function setDescription($description)
     {
@@ -37,8 +56,11 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Author of the video.
+     *
      * @param string $author
-     * @return $this
+     * @return Create
      */
     public function setAuthor($author)
     {
@@ -47,8 +69,11 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Video creation date.
+     *
      * @param \DateTime $date
-     * @return $this
+     * @return Create
      */
     public function setDate(\DateTime $date)
     {
@@ -57,8 +82,11 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * The URL of the web page where this video is published.
+     *
      * @param string $link
-     * @return $this
+     * @return Create
      */
     public function setLink($link)
     {
@@ -67,8 +95,12 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * URL from where to fetch a video file. Video file will be downloaded and processed on the server using this URL.
+     * ALERT: Only URLs with the http protocol are supported.
+     *
      * @param string $url
-     * @return $this
+     * @return Create
      */
     public function setDownloadUrl($url)
     {
@@ -77,19 +109,37 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * User defined parameter
+     *
+     * name can contain letters, numbers and punctuation characters ‘.’, ‘_’, ‘-‘
+     * name cannot start with a number or punctuation character
+     * name cannot contain spaces
+     *
      * @param string $key
      * @param string $value
-     * @return $this
+     * @return Create
+     *
+     * @throws \Exception
      */
     public function addCustomParameter($key, $value)
     {
+        if (!preg_match('/^([^0-9\.]){1}([0-9a-zA-Z\._-)$/', $key, $matches)) {
+            throw new \Exception('Custom parameter name cant start with (. 0-9), and may only contain (._- a-Z 0-9)');
+        }
+
         $this->customParameters[$key] = $value;
         return $this;
     }
 
     /**
+     * (optional)
+     * User defined parameter
+     *
+     * @see addCustomParameter
+     *
      * @param array $parameters
-     * @return $this
+     * @return Create
      */
     public function setCustomParameters(array $parameters)
     {
@@ -101,8 +151,13 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Video file MD5 message digest. If supplied and resumable option is set to False,
+     * it will be compared with the MD5 digest calculated for the received video file.
+     * Uploaded video will be rejected if MD5 message digests do not match.
+     *
      * @param string $md5
-     * @return $this
+     * @return Create
      */
     public function setMd5($md5)
     {
@@ -111,8 +166,13 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Specifies if the video will be uploaded using resumable protocol:
+     * True: Video will be uploaded using resumable protocol.
+     * False: Video will be uploaded using non-resumable protocol.
+     *
      * @param boolean $resumeable
-     * @return $this
+     * @return Create
      */
     public function isResumeable($resumeable)
     {
@@ -121,8 +181,12 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Video file size. If supplied, it will be compared with the size of the received video file.
+     * Uploaded video will be rejected if the sizes do not match.
+     *
      * @param integer $size
-     * @return $this
+     * @return Create
      */
     public function setSize($size)
     {
@@ -131,8 +195,11 @@ class Create extends Api
     }
 
     /**
+     * (optional)
+     * Set the video file which should be uploaded
+     *
      * @param SplFileInfo $file
-     * @return $this
+     * @return Create
      */
     public function setVideoFile(SplFileInfo $file)
     {
