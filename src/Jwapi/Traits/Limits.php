@@ -1,14 +1,30 @@
 <?php
+/**
+ * This file is part of JW API.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @author Martin Aarhof <martin.aarhof@gmail.com>
+ */
 namespace Jwapi\Traits;
 
 use Guzzle\Http\Message\Response;
 
+/**
+ * Class Limits
+ * @package Jwapi\Traits
+ */
 trait Limits
 {
 
     /**
+     * (optional)
+     * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
+     *
      * @param integer $limit
-     * @return $this
+     * @return Limits
      * @throws \Exception
      */
     public function setResultLimit($limit)
@@ -22,8 +38,11 @@ trait Limits
     }
 
     /**
+     * (optional)
+     * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
+     *
      * @param integer $offset
-     * @return $this
+     * @return Limits
      */
     public function setResultOffset($offset)
     {
@@ -32,6 +51,9 @@ trait Limits
     }
 
     /**
+     * Get next page of results
+     * Returns null if no next page
+     *
      * @return null|Response
      * @throws \Exception
      */
@@ -56,6 +78,9 @@ trait Limits
     }
 
     /**
+     * Get previous page of results
+     * Returns null if no previous page
+     *
      * @return null|Response
      * @throws \Exception
      */

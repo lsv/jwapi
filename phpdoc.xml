@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor>
+    <title>JW API</title>
+    <parser>
+        <target>build/documentation</target>
+    </parser>
+    <transformer>
+        <target>build/documentation</target>
+    </transformer>
+    <files>
+        <directory>src/Jwapi</directory>
+    </files>
+    <transformations>
+        <template name="clean"/>
+    </transformations>
+    <logging>
+        <level>warn</level>
+        <paths>
+            <default>build/logs/docs_{DATE}.log</default>
+            <errors>build/logs/docs_{DATE}.errors.log</errors>
+        </paths>
+    </logging>
+</phpdocumentor>

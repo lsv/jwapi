@@ -10,23 +10,25 @@
  */
 namespace Jwapi\Traits;
 
+use Jwapi\Search as SearchObject;
+
 /**
- * Class VideoKey
+ * Class Search
  * @package Jwapi\Traits
  */
-trait VideoKey
+trait Search
 {
 
     /**
-     * (required)
-     * Key of the video you want data for.
+     * (optional)
+     * Set what you want to search for
      *
-     * @param string $key
-     * @return $this
+     * @param SearchObject $search
+     * @return Search
      */
-    public function setVideoKey($key)
+    public function setSearch(SearchObject $search)
     {
-        $this->setGet('video_key', $key);
+        $this->setGet('search', $search->__toString());
         return $this;
     }
 
