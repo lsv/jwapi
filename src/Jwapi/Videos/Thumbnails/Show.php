@@ -21,6 +21,9 @@ class Show extends Api
 {
     use Traits\VideoKey;
 
-    protected $url = '/videos/thumbnails/show';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/thumbnails/show';
 
 } 

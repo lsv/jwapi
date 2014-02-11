@@ -22,7 +22,10 @@ class Show extends Api
     use Traits\VideoKey;
     use Traits\Dates;
 
-    protected $url = '/videos/views/show';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/views/show';
 
     /**
      * (optional)

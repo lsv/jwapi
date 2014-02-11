@@ -91,7 +91,10 @@ class Lists extends Api
      */
     const MAXLIMIT = 1000;
 
-    protected $url = '/videos/list';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/list';
 
     /**
      * (optional)
@@ -142,6 +145,9 @@ class Lists extends Api
         return $this;
     }
 
+    /**
+     * {@inherit}
+     */
     protected function beforeRun()
     {
         if ($this->tags) {

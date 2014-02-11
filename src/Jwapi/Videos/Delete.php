@@ -21,6 +21,16 @@ class Delete extends Api
 {
     use Traits\VideoKey;
 
-    protected $url = '/videos/delete';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/delete';
+
+    /**
+     * {@inherit}
+     */
+    protected $required = array(
+        'video_key'
+    );
 
 } 

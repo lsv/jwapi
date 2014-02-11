@@ -24,9 +24,21 @@ class Create extends Api
     use Traits\Tags;
     use Traits\Fileupload;
 
-    protected $url = '/videos/create';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/create';
+
+    /**
+     * File upload key
+     * @var string
+     */
     protected $fileupload = 'video';
 
+    /**
+     * Custom parameters
+     * @var array
+     */
     private $customParameters = array();
 
     /**
@@ -208,7 +220,8 @@ class Create extends Api
     }
 
     /**
-     * @throws \Exception
+     * {@inherit}
+     * @throws \InvalidArgumentException
      */
     protected function beforeRun()
     {
@@ -223,11 +236,11 @@ class Create extends Api
         }
 
         if ($this->issetGet('download_url') && $this->file != '') {
-            throw new \Exception('Create video: Both download url and video file is set');
+            throw new \InvalidArgumentException('Create video: Both download url and video file is set');
         }
 
         if (!$this->issetGet('download_url') && $this->file == '') {
-            throw new \Exception('Create video: Download url or video file is not set');
+            throw new \InvalidArgumentException('Create video: Download url or video file is not set');
         }
 
     }

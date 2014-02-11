@@ -40,20 +40,64 @@ abstract class Api
      */
     const STATUS_OK = 'ok';
 
+    /**
+     * API key
+     * @var string
+     */
     private $apikey;
+
+    /**
+     * API secret
+     * @var string
+     */
     private $apisecret;
+
+    /**
+     * Use HTTPS
+     * @var bool
+     */
     private $https = true;
+
+    /**
+     * GETs to the query
+     * @var array
+     */
     private $gets = array();
+
+    /**
+     * POSTs to the query
+     * @var array
+     */
     private $posts = array();
 
     /**
+     * The response
      * @var Response
      */
     private $response;
 
-    protected $url;
+    /**
+     * Request path
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * Request method
+     * @var string
+     */
     protected $method = 'GET';
 
+    /**
+     * Required fields
+     * @var array
+     */
+    protected $required = array();
+
+    /**
+     * Should we authenticate the request
+     * @var bool
+     */
     protected $authenticate = true;
 
     /**
@@ -125,9 +169,13 @@ abstract class Api
         return $this->response;
     }
 
+    /**
+     * Get the path
+     * @return string
+     */
     public function getPath()
     {
-        return $this->url;
+        return $this->path;
     }
 
     /**
@@ -139,6 +187,7 @@ abstract class Api
     public function send($checkstatus = true)
     {
         $this->beforeRun();
+        $this->checkRequired();
 
         if (!preg_match('/^(http)/', $this->getPath(), $matches)) {
             $client = new Client(sprintf(
@@ -159,7 +208,7 @@ abstract class Api
                 ));
                 break;
             case 'POST':
-                $request = $client->post($this->getPath(), null, $this->posts, array(
+                $request = $client->post($this->getPath(), null, $this->getPosts(), array(
                     'query' => $this->getGets()
                 ));
                 break;
@@ -172,6 +221,31 @@ abstract class Api
         return $this->afterRun();
     }
 
+    /**
+     * Check if required fields are set
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkRequired()
+    {
+        $errors = array();
+        foreach($this->required as $key) {
+            if (! $this->issetGet($key)) {
+                $errors[] = $key;
+            }
+        }
+
+        if ($errors) {
+            throw new \InvalidArgumentException(get_called_class() . ' requires fields: ' . implode(', ', $errors));
+        }
+
+    }
+
+    /**
+     * Check if the response gets a OK status
+     *
+     * @throws \Exception
+     */
     private function checkStatus()
     {
         $response = $this->getResponse();
@@ -188,6 +262,8 @@ abstract class Api
     }
 
     /**
+     * Sets the response
+     *
      * @param RequestInterface $request
      * @return Response
      */
@@ -202,12 +278,17 @@ abstract class Api
         return $this->response;
     }
 
+    /**
+     * Runs before the actual request
+     */
     protected function beforeRun()
     {
 
     }
 
     /**
+     * Runs after the request
+     *
      * @return Response
      */
     protected function afterRun()
@@ -216,6 +297,8 @@ abstract class Api
     }
 
     /**
+     * Check if GET isset
+     *
      * @param string $key
      * @return bool
      */
@@ -229,6 +312,8 @@ abstract class Api
     }
 
     /**
+     * Set GET
+     *
      * @param string $key
      * @param string $value
      * @return Api
@@ -240,6 +325,8 @@ abstract class Api
     }
 
     /**
+     * Get GET
+     *
      * @param string $key
      * @return null|string
      */
@@ -252,6 +339,11 @@ abstract class Api
         return null;
     }
 
+    /**
+     * Get all GETs
+     *
+     * @return array
+     */
     private function getGets()
     {
         if ($this->authenticate) {
@@ -277,6 +369,8 @@ abstract class Api
     }
 
     /**
+     * Check if POST isset
+     *
      * @param string $key
      * @return bool
      */
@@ -290,6 +384,8 @@ abstract class Api
     }
 
     /**
+     * Set POST
+     *
      * @param string $key
      * @param string $value
      * @return Api
@@ -302,6 +398,8 @@ abstract class Api
     }
 
     /**
+     * Get POST
+     *
      * @param string $key
      * @return null|string
      */
@@ -315,6 +413,18 @@ abstract class Api
     }
 
     /**
+     * Get all POSTs
+     *
+     * @return array
+     */
+    protected function getPosts()
+    {
+        return $this->posts;
+    }
+
+    /**
+     * Set Boolean value
+     *
      * @param bool $bool
      * @return string
      */
@@ -324,6 +434,8 @@ abstract class Api
     }
 
     /**
+     * Get Boolean value
+     *
      * @param string $bool
      * @return bool
      */

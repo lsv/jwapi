@@ -49,7 +49,10 @@ class Lists extends Api
      */
     const STATUS_FILTER_DELETED = 'deleted';
 
-    protected $url = '/videos/views/list';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/views/list';
 
     /**
      * (optional)

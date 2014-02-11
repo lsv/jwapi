@@ -17,6 +17,9 @@ namespace Jwapi\Videos;
 class Update extends Create
 {
 
-    protected $url = '/videos/update';
+    /**
+     * {@inherit}
+     */
+    protected $path = '/videos/update';
 
 }
