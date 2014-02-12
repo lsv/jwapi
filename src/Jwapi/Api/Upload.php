@@ -37,15 +37,15 @@ class Upload extends Api
         parent::__construct($api->getApiKey(), $api->getApiSecret(), $api->getHttps());
 
         $this->path = sprintf('%s://%s%s',
-            $data[$method]['link']['protocol'],
-            $data[$method]['link']['address'],
-            $data[$method]['link']['path']
+            $data['link']['protocol'],
+            $data['link']['address'],
+            $data['link']['path']
         );
 
         $this
-            ->setGet('key', $data[$method]['query']['key'])
-            ->setGet('token', $data[$method]['query']['token'])
-            ->setPost('file', file_get_contents($file->getFilename()));
+            ->setGet('key', $data['link']['query']['key'])
+            ->setGet('token', $data['link']['query']['token'])
+            ->setPost('file', '@' . $file->getPath() . '/' . $file->getFilename());
 
     }
 

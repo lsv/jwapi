@@ -11,16 +11,16 @@ class DeleteTest extends TestClass
     {
         $obj = new Delete($this->getApiKey(), $this->getApiSecret());
         $obj
-            ->setVideoKey('foobarvideo');
+            ->setVideoKey('rWXIecrY');
 
         $url = parse_url($obj->send(false)->getEffectiveUrl());
         $values = array(
-            'video_key' => 'foobarvideo'
+            'video_key' => 'rWXIecrY'
         );
         $this->checkUrlValues($url, $values);
 
         $this->checkUrl($obj, $url);
-        $this->checkMd5($obj, $url);
+        $this->checkSignature($obj, $url);
 
     }
 

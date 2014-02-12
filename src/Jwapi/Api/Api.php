@@ -12,6 +12,7 @@ namespace Jwapi\Api;
 
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
 
@@ -179,16 +180,11 @@ abstract class Api
     }
 
     /**
-     * Send our request
-     *
-     * @param bool $checkstatus
-     * @return Response
+     * Get the request
+     * @return RequestInterface
      */
-    public function send($checkstatus = true)
+    public function getRequest()
     {
-        $this->beforeRun();
-        $this->checkRequired();
-
         if (!preg_match('/^(http)/', $this->getPath(), $matches)) {
             $client = new Client(sprintf(
                 'http%s://%s/%s',
@@ -214,7 +210,21 @@ abstract class Api
                 break;
         }
 
-        $this->setResponse($request);
+        return $request;
+    }
+
+    /**
+     * Send our request
+     *
+     * @param bool $checkstatus
+     * @return Response
+     */
+    public function send($checkstatus = true)
+    {
+        $this->beforeRun();
+        $this->checkRequired();
+
+        $this->setResponse($this->getRequest());
         if ($checkstatus) {
             $this->checkStatus();
         }
@@ -273,6 +283,8 @@ abstract class Api
             $this->response = $request->send();
         } catch (ClientErrorResponseException $exception) {
             $this->response = $exception->getResponse();
+        } catch (ServerErrorResponseException $exception) {
+            $this->response = $exception->getResponse();
         }
 
         return $this->response;
@@ -330,7 +342,7 @@ abstract class Api
      *
      * @return array
      */
-    private function getGets()
+    public function getGets()
     {
         if ($this->authenticate) {
             $digits = 8;
@@ -343,11 +355,15 @@ abstract class Api
 
             ksort($this->gets);
 
-            $signature = '';
-            foreach($this->gets as $get) {
-                $signature .= $get;
+            $signature = array();
+            foreach($this->gets as $k => $v) {
+                if ($k == 'api_signature') {
+                    continue;
+                }
+
+                $signature[] = $k . '=' . $v;
             }
-            $this->setGet('api_signature', sha1($signature . $this->getApiSecret()));
+            $this->setGet('api_signature', sha1(implode('&', $signature) . $this->getApiSecret()));
         }
 
         return $this->gets;
@@ -388,7 +404,7 @@ abstract class Api
      *
      * @return array
      */
-    protected function getPosts()
+    public function getPosts()
     {
         return $this->posts;
     }

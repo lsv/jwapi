@@ -7,7 +7,7 @@ use Jwapi_Tests\TestClass;
 class CreateTest extends TestClass
 {
 
-    public function test_canCreateCreateUrl()
+    public function test_canCreateVideo()
     {
         $date = new \DateTime();
 
@@ -16,30 +16,25 @@ class CreateTest extends TestClass
             ->setAuthor('Author')
             ->setDate($date)
             ->setDescription('desc')
-            ->setTitle('Title')
+            ->setTitle('test_canCreateVideo')
             ->setDownloadUrl('http://foobar.com')
             ->setLink('http://barfoo.com')
             ->setMd5('123')
             ->isResumeable(true)
             ->setSize(200)
-            ->addCustomParameter('custom1', 'custom1')
-            ->setCustomParameters(array('custom2' => 'custom2', 'custom3' => 'custom3'))
             ->addTag('tag1')
             ->setTags(array('tag2', 'tag3'))
         ;
 
-        $url = parse_url($obj->send(false)->getEffectiveUrl());
+        $url = parse_url($obj->send()->getEffectiveUrl());
         $values = array(
             'author' => 'Author',
             'date' => $date->getTimestamp(),
             'description' => 'desc',
-            'title' => 'Title',
+            'title' => 'test_canCreateVideo',
             'tags' => 'tag1,tag2,tag3',
             'download_url' => urlencode('http://foobar.com'),
             'link' => urlencode('http://barfoo.com'),
-            'custom_custom1' => 'custom1',
-            'custom_custom2' => 'custom2',
-            'custom_custom3' => 'custom3',
             'md5' => '123',
             'resumable' => 'True',
             'size' => 200
@@ -48,7 +43,46 @@ class CreateTest extends TestClass
         $this->checkUrlValues($url, $values);
 
         $this->checkUrl($obj, $url);
-        $this->checkMd5($obj, $url);
+        $this->checkSignature($obj, $url);
+    }
+
+    public function test_canCreateCreateDownloadUrl()
+    {
+        $date = new \DateTime();
+
+        $obj = new Create($this->getApiKey(), $this->getApiSecret());
+        $obj
+            ->setAuthor('Author')
+            ->setDate($date)
+            ->setDescription('desc')
+            ->setTitle('Title_canCreateCreateDownloadUrl')
+            ->setDownloadUrl($this->getMp4VideoFileUrl())
+            ->addTag('TESTHEST')
+        ;
+
+        $response = $obj->send();
+
+        $url = parse_url($response->getEffectiveUrl());
+        $this->checkUrl($obj, $url);
+        $this->checkSignature($obj, $url);
+    }
+
+    public function test_canCreateCreateUploadUrl()
+    {
+        $date = new \DateTime();
+
+        $obj = new Create($this->getApiKey(), $this->getApiSecret());
+        $obj
+            ->setAuthor('Author')
+            ->setDate($date)
+            ->setDescription('desc')
+            ->setTitle('test_canCreateCreateUploadUrl')
+            ->setVideoFile($this->getMp4VideoFile())
+            ->addTag('TESTHEST2')
+        ;
+
+        $response = $obj->send()->json();
+        $this->assertArrayHasKey('status', $response);
     }
 
     /**

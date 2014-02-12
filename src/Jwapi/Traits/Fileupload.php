@@ -33,8 +33,7 @@ trait Fileupload
     {
         if ($this->file instanceof SplFileInfo) {
             $upload = new Upload($this, $this->file, $this->fileupload);
-            $upload->send();
-            return $upload->getResponse();
+            return $upload->send(false);
         }
 
         return parent::afterRun();
