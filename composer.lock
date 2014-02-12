@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7d233e8ae60fac234f3a40549f93246f",
+    "hash": "846c83b69ab71cd1d17e55f9fd015517",
     "packages": [
         {
             "name": "guzzle/common",
@@ -1028,16 +1028,16 @@
         },
         {
             "name": "nette/nette",
-            "version": "v2.1.1-RC2",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/nette.git",
-                "reference": "e2c75591ef53a58985df7943d5d7f8c00966db51"
+                "reference": "9e7e5fc5921053172dbacecda2c06d749f89a71b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/nette/zipball/e2c75591ef53a58985df7943d5d7f8c00966db51",
-                "reference": "e2c75591ef53a58985df7943d5d7f8c00966db51",
+                "url": "https://api.github.com/repos/nette/nette/zipball/9e7e5fc5921053172dbacecda2c06d749f89a71b",
+                "reference": "9e7e5fc5921053172dbacecda2c06d749f89a71b",
                 "shasum": ""
             },
             "require": {
@@ -1090,7 +1090,7 @@
                 "mvc",
                 "templating"
             ],
-            "time": "2014-02-08 12:56:25"
+            "time": "2014-02-11 04:51:20"
         },
         {
             "name": "nikic/php-parser",
@@ -2292,6 +2292,60 @@
                 "psr-3"
             ],
             "time": "2012-12-21 11:40:51"
+        },
+        {
+            "name": "satooshi/php-coveralls",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/satooshi/php-coveralls.git",
+                "reference": "5f1ad0589aa263178412871a5400d467c7709871"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/satooshi/php-coveralls/zipball/5f1ad0589aa263178412871a5400d467c7709871",
+                "reference": "5f1ad0589aa263178412871a5400d467c7709871",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.17"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "dev-master",
+                "phpmd/phpmd": "dev-master",
+                "phpunit/php-invoker": ">=1.1.0,<1.2.0",
+                "phpunit/phpunit": "3.7.*@dev",
+                "squizlabs/php_codesniffer": "1.4.*"
+            },
+            "bin": [
+                "composer/bin/coveralls.php"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Contrib\\Component": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kitamura Satoshi",
+                    "email": "with.no.parachute@gmail.com",
+                    "homepage": "https://www.facebook.com/satooshi.jp"
+                }
+            ],
+            "description": "PHP Coveralls",
+            "homepage": "https://github.com/satooshi/php-coveralls",
+            "keywords": [
+                "ci",
+                "coverage",
+                "github",
+                "test"
+            ],
+            "time": "2013-04-15 16:37:51"
         },
         {
             "name": "symfony/config",
