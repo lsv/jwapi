@@ -38,6 +38,15 @@ class Lists extends Api
     const TAGS_ANY = 'any';
 
     /**
+     * Tag modes
+     * @var array
+     */
+    static private $tagsmodes = array(
+        self::TAGS_ALL,
+        self::TAGS_ANY
+    );
+
+    /**
      * Search by unknown medias
      * @var string
      */
@@ -54,6 +63,16 @@ class Lists extends Api
      * @var string
      */
     const MEDIAFILTER_VIDEO = 'video';
+
+    /**
+     * Mediafilters
+     * @var array
+     */
+    static private $mediafilters = array(
+        self::MEDIAFILTER_UNKNOWN,
+        self::MEDIAFILTER_AUDIO,
+        self::MEDIAFILTER_VIDEO
+    );
 
     /**
      * Search by created videos
@@ -86,6 +105,18 @@ class Lists extends Api
     const STATUSFILTER_FAILED = 'failed';
 
     /**
+     * Statusfilters
+     * @var array
+     */
+    static private $statusfilters = array(
+        self::STATUSFILTER_CREATED,
+        self::STATUSFILTER_PROCESSING,
+        self::STATUSFILTER_READY,
+        self::STATUSFILTER_UPDATING,
+        self::STATUSFILTER_FAILED
+    );
+
+    /**
      * Maximum limit
      * @var integer
      */
@@ -104,11 +135,18 @@ class Lists extends Api
      *
      * @param string $mode
      * @return Lists
+     *
+     * @throws \InvalidArgumentException
      */
     public function setTagsMode($mode = self::TAGS_ALL)
     {
-        $this->setGet('tags_mode', $mode);
-        return $this;
+        if (in_array($mode, self::$tagsmodes)) {
+            $this->setGet('tags_mode', $mode);
+            return $this;
+        }
+
+        throw new \InvalidArgumentException('Mode ' . $mode . ' is invalid');
+
     }
 
     /**
@@ -120,11 +158,17 @@ class Lists extends Api
      *
      * @param string $mediafilter
      * @return Lists
+     *
+     * @throws \InvalidArgumentException
      */
     public function setMediaTypesFilter($mediafilter = self::MEDIAFILTER_VIDEO)
     {
-        $this->setGet('mediatypes_filter', $mediafilter);
-        return $this;
+        if (in_array($mediafilter, self::$mediafilters)) {
+            $this->setGet('mediatypes_filter', $mediafilter);
+            return $this;
+        }
+
+        throw new \InvalidArgumentException('Media type filter: ' . $mediafilter . ' is invalid');
     }
 
     /**
@@ -138,11 +182,17 @@ class Lists extends Api
      *
      * @param string $statusfilter
      * @return Lists
+     *
+     * @throws \InvalidArgumentException
      */
     public function setStatusFilter($statusfilter = self::STATUSFILTER_READY)
     {
-        $this->setGet('statuses_filter', $statusfilter);
-        return $this;
+        if (in_array($statusfilter, self::$statusfilters)) {
+            $this->setGet('statuses_filter', $statusfilter);
+            return $this;
+        }
+
+        throw new \InvalidArgumentException('Status filter: ' . $statusfilter . ' is invalid');
     }
 
     /**
@@ -150,9 +200,7 @@ class Lists extends Api
      */
     protected function beforeRun()
     {
-        if ($this->tags) {
-            $this->setGet('tags', implode(',', $this->tags));
-        }
+        $this->beforeTags();
     }
 
 } 

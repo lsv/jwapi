@@ -29,8 +29,8 @@ trait Limits
      */
     public function setResultLimit($limit)
     {
-        if ((int)$limit > $this->getLimit()) {
-            throw new \Exception('Max ' . $this->getLimit() . ' results is allowed');
+        if ((int)$limit > self::MAXLIMIT) {
+            throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
         }
 
         $this->setGet('result_limit', (int)$limit);

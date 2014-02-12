@@ -316,27 +316,13 @@ abstract class Api
      *
      * @param string $key
      * @param string $value
+     * @param boolean $encode
      * @return Api
      */
-    protected function setGet($key, $value)
+    protected function setGet($key, $value, $encode = true)
     {
-        $this->gets[$key] = urlencode($value);
+        $this->gets[$key] = ($encode ? urlencode($value) : $value);
         return $this;
-    }
-
-    /**
-     * Get GET
-     *
-     * @param string $key
-     * @return null|string
-     */
-    protected function getGet($key)
-    {
-        if ($this->issetGet($key)) {
-            return $this->gets[$key];
-        }
-
-        return null;
     }
 
     /**
@@ -395,21 +381,6 @@ abstract class Api
         $this->method = 'POST';
         $this->posts[$key] = $value;
         return $this;
-    }
-
-    /**
-     * Get POST
-     *
-     * @param string $key
-     * @return null|string
-     */
-    protected function getPost($key)
-    {
-        if ($this->issetPost($key)) {
-            return $this->posts[$key];
-        }
-
-        return null;
     }
 
     /**

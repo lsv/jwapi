@@ -21,12 +21,6 @@ trait Fileupload
 {
 
     /**
-     * Fileupload key
-     * @var string
-     */
-    protected $fileupload = '';
-
-    /**
      * File
      * @var SplFileInfo
      */
