@@ -1,0 +1,22 @@
+env:
+  global:
+    - secure: <string>
+
+language: php
+
+php:
+ - 5.4
+ - 5.5
+
+before_script:
+ - curl -s https://getcomposer.org/installer | php
+ - php composer.phar install --dev
+
+script:
+ - php vendor/bin/phpunit -c .phpunit.dist.xml
+
+after_script:
+ - php vendor/bin/coveralls -v
+
+notifications:
+  email: martin.aarhof@gmail.com
