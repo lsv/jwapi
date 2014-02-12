@@ -20,6 +20,10 @@ use Symfony\Component\Finder\SplFileInfo;
 trait Fileupload
 {
 
+    protected $requiredPost = array(
+        'file'
+    );
+
     /**
      * File
      * @var SplFileInfo

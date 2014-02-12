@@ -90,10 +90,16 @@ abstract class Api
     protected $method = 'GET';
 
     /**
-     * Required fields
+     * Required GET fields
      * @var array
      */
     protected $required = array();
+
+    /**
+     * Required POST fields
+     * @var array
+     */
+    private $requiredPost = array();
 
     /**
      * Should we authenticate the request
@@ -245,6 +251,17 @@ abstract class Api
             }
         }
 
+        // Ignored because no manual method to get these
+        // @codeCoverageIgnoreStart
+        if ($this->method == 'POST') {
+            foreach($this->requiredPost as $key) {
+                if (! $this->issetPost($key)) {
+                    $errors[] = $key;
+                }
+            }
+        }
+        // @codeCoverageIgnoreEnd
+
         if ($errors) {
             throw new \InvalidArgumentException(get_called_class() . ' requires fields: ' . implode(', ', $errors));
         }
@@ -283,9 +300,11 @@ abstract class Api
             $this->response = $request->send();
         } catch (ClientErrorResponseException $exception) {
             $this->response = $exception->getResponse();
+        // @codeCoverageIgnoreStart
         } catch (ServerErrorResponseException $exception) {
             $this->response = $exception->getResponse();
         }
+        // @codeCoverageIgnoreEnd
 
         return $this->response;
     }
@@ -425,6 +444,8 @@ abstract class Api
      *
      * @param string $bool
      * @return bool
+     *
+     * @codeCoverageIgnore
      */
     protected function getBoolean($bool)
     {
