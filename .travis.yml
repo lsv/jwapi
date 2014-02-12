@@ -1,16 +1,19 @@
 language: php
+
 php:
-- 5.4
-- 5.5
+  - 5.4
+  - 5.5
+
 before_script:
-- curl -s https://getcomposer.org/installer | php
-- php composer.phar install --dev
-script:
-- vendor/bin/phpunit
+  - curl -s https://getcomposer.org/installer | php
+  - php composer.phar install --dev
+
 after_script:
-- php vendor/bin/coveralls -v
+  - php vendor/bin/coveralls -v
+
 notifications:
   email: martin.aarhof@gmail.com
+
 env:
   global:
     secure: L7HtlaQF2/5EiKobyDb7GYo+ggH2w0hRKDIaKQTVwowb2tJ4Vsp15nu5kaOfI/eMbSFR28ATSSrCZqVTq06bEpwvF/CZbkeEjUdFX/te6lIqirGyglQg2JWI++FaBxJAT+11BL5wnCjpLKpwBTdeB84oP9BCC7u50oMLMTwSk0A=
