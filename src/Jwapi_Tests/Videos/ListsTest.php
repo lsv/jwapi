@@ -21,17 +21,17 @@ class ListsTest extends TestClass
             ->setEndDate($date2)
             ->setResultLimit(1)
             ->setResultOffset(1)
-            ->setOrderBy('name', 'desc')
+            ->setOrderBy('title', 'desc')
         ;
 
-        $url = parse_url($obj->send(false)->getEffectiveUrl());
+        $url = parse_url($obj->send()->getEffectiveUrl());
         $values = array(
             'result_limit' => 1,
             'result_offset' => 1,
             'tags_mode' => Lists::TAGS_ALL,
             'mediatypes_filter' => Lists::MEDIAFILTER_AUDIO,
             'statuses_filter' => Lists::STATUSFILTER_CREATED,
-            'order_by' => urlencode('name:desc'),
+            'order_by' => urlencode('title:desc'),
             'start_date' => $date1->getTimestamp(),
             'end_date' => $date2->getTimestamp()
         );
@@ -39,7 +39,22 @@ class ListsTest extends TestClass
         $this->checkUrlValues($url, $values);
 
         $this->checkUrl($obj, $url);
-        $this->checkMd5($obj, $url);
+        $this->checkSignature($obj, $url);
+    }
+
+    public function test_CanListRealVideos()
+    {
+        $obj = new Lists($this->getApiKey(), $this->getApiSecret());
+        $obj
+            ->setMediaTypesFilter(Lists::MEDIAFILTER_VIDEO)
+            ->setOrderBy('title', 'desc');
+
+        $request = $obj->send();
+        $response = $request->json();
+
+        $this->assertTrue(is_array($response));
+        $this->assertArrayHasKey('videos', $response);
+        $this->assertArrayHasKey('title', $response['videos'][0]);
 
     }
 

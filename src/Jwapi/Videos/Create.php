@@ -232,7 +232,7 @@ class Create extends Api
 
         if ($this->customParameters) {
             foreach($this->customParameters as $k => $v) {
-                $this->setGet('custom.' . $k, $v);
+                $this->setGet(urlencode('custom.' . $k), $v);
             }
         }
 

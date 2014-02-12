@@ -28,9 +28,19 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         return $this->getFile('mp4test.mp4');
     }
 
+    protected function getMp4VideoFileUrl()
+    {
+        return $this->getFileUrl('mp4test.mp4');
+    }
+
     protected function getOgvVideoFile()
     {
         return $this->getFile('ogvtest.ogv');
+    }
+
+    protected function getOgvVideoFileUrl()
+    {
+        return $this->getFileUrl('ogvtest.ogv');
     }
 
     protected function getPngThumbnail()
@@ -38,9 +48,19 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         return $this->getFile('pngthumb.png');
     }
 
+    protected function getPngThumbnailUrl()
+    {
+        return $this->getFileUrl('pngthumb.png');
+    }
+
     protected function getJpgThumbnail()
     {
         return $this->getFile('jpgthumb.jpg');
+    }
+
+    protected function getJpgThumbnailUrl()
+    {
+        return $this->getFileUrl('jpgthumb.jpg');
     }
 
     protected function getCaptionFile()
@@ -48,9 +68,20 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         return $this->getFile('caption.srt');
     }
 
+    protected function getCaptionFileUrl()
+    {
+        return $this->getFileUrl('caption.srt');
+    }
+
+    private function getFileUrl($file)
+    {
+        return 'http://web3.superliga.dk/fileadmin/TESTFILES/' . $file;
+    }
+
     /**
      * @param $file
      * @return SplFileInfo
+     * @throws \Exception
      */
     private function getFile($file)
     {
@@ -71,18 +102,20 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         $this->assertEquals($class->getPath(), $url['path']);
     }
 
-    protected function checkMd5(Api $class, $url)
+    protected function checkSignature(Api $class, $url)
     {
         parse_str($url['query'], $query);
         ksort($query);
 
-        $signature = '';
+        $signature = array();
         foreach($query as $key => $val) {
-            if ($key == 'api_signature') continue;
-            $signature .= $val;
+            if ($key == 'api_signature') {
+                continue;
+            }
+            $signature[] = $key . '=' . $val;
         }
 
-        $this->assertEquals($query['api_signature'], sha1($signature . $this->getApiSecret()));
+        $this->assertEquals($query['api_signature'], sha1(implode('&', $signature) . $this->getApiSecret()), 'Wrong signature code');
 
     }
 
