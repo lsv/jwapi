@@ -12,7 +12,7 @@ script:
   - vendor/bin/phpunit -c ./phpunit.dist.xml
 
 after_script:
-  - php vendor/bin/coveralls -v
+  - php vendor/bin/coveralls
 
 notifications:
   email: martin.aarhof@gmail.com
