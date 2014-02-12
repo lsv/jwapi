@@ -51,4 +51,14 @@ trait Tags
         return $this;
     }
 
+    /**
+     * Run before actual request
+     */
+    protected function beforeTags()
+    {
+        if ($this->tags) {
+            $this->setGet('tags', implode(',', $this->tags), false);
+        }
+    }
+
 }

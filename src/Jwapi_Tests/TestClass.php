@@ -2,6 +2,8 @@
 namespace Jwapi_Tests;
 
 use Jwapi\Api\Api;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 abstract class TestClass extends \PHPUnit_Framework_TestCase
 {
@@ -11,14 +13,55 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         parent::__construct();
     }
 
-    public function getApiKey()
+    protected function getApiKey()
     {
         return JWTEST_APIKEY;
     }
 
-    public function getApiSecret()
+    protected function getApiSecret()
     {
         return JWTEST_APISECRET;
+    }
+
+    protected function getMp4VideoFile()
+    {
+        return $this->getFile('mp4test.mp4');
+    }
+
+    protected function getOgvVideoFile()
+    {
+        return $this->getFile('ogvtest.ogv');
+    }
+
+    protected function getPngThumbnail()
+    {
+        return $this->getFile('pngthumb.png');
+    }
+
+    protected function getJpgThumbnail()
+    {
+        return $this->getFile('jpgthumb.jpg');
+    }
+
+    protected function getCaptionFile()
+    {
+        return $this->getFile('caption.srt');
+    }
+
+    /**
+     * @param $file
+     * @return SplFileInfo
+     */
+    private function getFile($file)
+    {
+        $finder = new Finder();
+        $files = $finder->files()->in(__DIR__ . '/testfiles')->name($file);
+        foreach($files as $file) {
+            return $file;
+        }
+
+        throw new \Exception('Could not find testfile: ' . $file);
+
     }
 
     protected function checkUrl(Api $class, $url)
