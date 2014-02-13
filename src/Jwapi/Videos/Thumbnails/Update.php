@@ -11,6 +11,7 @@
 namespace Jwapi\Videos\Thumbnails;
 
 use Jwapi\Api\Api;
+use Jwapi\Api\Upload;
 use Symfony\Component\Finder\SplFileInfo;
 use Jwapi\Traits;
 
@@ -20,8 +21,8 @@ use Jwapi\Traits;
  */
 class Update extends Api
 {
-    use Traits\VideoKey;
-    use Traits\Fileupload;
+    //use Traits\VideoKey;
+    //use Traits\Fileupload;
 
     /**
      * {@inherit}
@@ -33,6 +34,29 @@ class Update extends Api
      * @var string
      */
     protected $fileupload = 'thumbnail';
+
+    protected $requiredPost = array(
+        'file'
+    );
+
+    /**
+     * File
+     * @var SplFileInfo
+     */
+    protected $file;
+
+    /**
+     * (required)
+     * Key of the video you want data for.
+     *
+     * @param string $key
+     * @return $this
+     */
+    public function setVideoKey($key)
+    {
+        $this->setGet('video_key', $key);
+        return $this;
+    }
 
     /**
      * (optional)
@@ -112,6 +136,19 @@ class Update extends Api
         if ($this->issetGet('position') && $this->file instanceof SplFileInfo) {
             throw new \Exception('Update thumbnail: Both file and position is set');
         }
+    }
+
+    /**
+     * {@inherit}
+     */
+    protected function afterRun()
+    {
+        if ($this->file instanceof SplFileInfo) {
+            $upload = new Upload($this, $this->file, $this->fileupload);
+            return $upload->send(false);
+        }
+
+        return parent::afterRun();
     }
 
 } 

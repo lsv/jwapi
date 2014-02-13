@@ -12,6 +12,7 @@
 namespace Jwapi\Videos;
 
 use Jwapi\Api\Api;
+use Jwapi\Api\Upload;
 use Symfony\Component\Finder\SplFileInfo;
 use Jwapi\Traits;
 
@@ -21,8 +22,8 @@ use Jwapi\Traits;
  */
 class Create extends Api
 {
-    use Traits\Tags;
-    use Traits\Fileupload;
+    //use Traits\Tags;
+    //use Traits\Fileupload;
 
     /**
      * {@inherit}
@@ -36,10 +37,64 @@ class Create extends Api
     protected $fileupload = 'video';
 
     /**
+     * Tags
+     * @var array
+     */
+    protected $tags = array();
+
+    /**
      * Custom parameters
      * @var array
      */
     private $customParameters = array();
+
+    protected $requiredPost = array(
+        'file'
+    );
+
+    /**
+     * File
+     * @var SplFileInfo
+     */
+    protected $file;
+
+    /**
+     * (optional)
+     * Set multiple tags
+     *
+     * @param array $tags
+     * @return Tags
+     */
+    public function setTags(array $tags)
+    {
+        foreach($tags as $tag) {
+            $this->addTag($tag);
+        }
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * Add a single tag
+     *
+     * @param string $tag
+     * @return Tags
+     */
+    public function addTag($tag)
+    {
+        $this->tags[] = $tag;
+        return $this;
+    }
+
+    /**
+     * Run before actual request
+     */
+    protected function beforeTags()
+    {
+        if ($this->tags) {
+            $this->setGet('tags', implode(',', $this->tags), false);
+        }
+    }
 
     /**
      * (optional)
@@ -244,6 +299,19 @@ class Create extends Api
             throw new \InvalidArgumentException('Create video: Download url or video file is not set');
         }
 
+    }
+
+    /**
+     * {@inherit}
+     */
+    protected function afterRun()
+    {
+        if ($this->file instanceof SplFileInfo) {
+            $upload = new Upload($this, $this->file, $this->fileupload);
+            return $upload->send(false);
+        }
+
+        return parent::afterRun();
     }
 
 } 
