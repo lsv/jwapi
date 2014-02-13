@@ -20,7 +20,7 @@ class Search
     /**
      * @return string
      */
-    protected function __toString()
+    public function __toString()
     {
         return '';
     }

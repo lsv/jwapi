@@ -19,13 +19,54 @@ use Jwapi\Traits;
  */
 class Show extends Api
 {
-    use Traits\VideoKey;
-    use Traits\Dates;
+    //use Traits\VideoKey;
+    //use Traits\Dates;
 
     /**
      * {@inherit}
      */
     protected $path = '/videos/views/show';
+
+    /**
+     * (required)
+     * Key of the video you want data for.
+     *
+     * @param string $key
+     * @return $this
+     */
+    public function setVideoKey($key)
+    {
+        $this->setGet('video_key', $key);
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * UTC date starting from which videos should be returned.
+     * Default is the first day of the current month.
+     *
+     * @param \DateTime $date
+     * @return Lists
+     */
+    public function setStartDate(\DateTime $date)
+    {
+        $this->setGet('start_date', $date->getTimestamp());
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * UTC date until (and including) which videos should be returned.
+     * Default is today’s date.
+     *
+     * @param \DateTime $date
+     * @return Lists
+     */
+    public function setEndDate(\DateTime $date)
+    {
+        $this->setGet('end_date', $date->getTimestamp());
+        return $this;
+    }
 
     /**
      * (optional)
