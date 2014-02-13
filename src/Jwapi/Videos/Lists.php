@@ -10,8 +10,10 @@
  */
 namespace Jwapi\Videos;
 
+use Guzzle\Http\Message\Response;
 use Jwapi\Api\Api;
 use Jwapi\Traits;
+use Jwapi\Search as SearchObject;
 
 /**
  * Return a list of videos.
@@ -19,11 +21,11 @@ use Jwapi\Traits;
  */
 class Lists extends Api
 {
-    use Traits\Tags;
-    use Traits\Limits;
-    use Traits\Dates;
-    use Traits\OrderBy;
-    use Traits\Search;
+    //use Traits\Tags;
+    //use Traits\Limits;
+    //use Traits\Dates;
+    //use Traits\OrderBy;
+    //use Traits\Search;
 
     /**
      * Search by all tags
@@ -36,6 +38,12 @@ class Lists extends Api
      * @var string
      */
     const TAGS_ANY = 'any';
+
+    /**
+     * Tags
+     * @var array
+     */
+    protected $tags = array();
 
     /**
      * Tag modes
@@ -201,6 +209,186 @@ class Lists extends Api
     protected function beforeRun()
     {
         $this->beforeTags();
+    }
+
+    /**
+     * (optional)
+     * Set multiple tags
+     *
+     * @param array $tags
+     * @return Lists
+     */
+    public function setTags(array $tags)
+    {
+        foreach($tags as $tag) {
+            $this->addTag($tag);
+        }
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * Add a single tag
+     *
+     * @param string $tag
+     * @return Lists
+     */
+    public function addTag($tag)
+    {
+        $this->tags[] = $tag;
+        return $this;
+    }
+
+    /**
+     * Run before actual request
+     */
+    protected function beforeTags()
+    {
+        if ($this->tags) {
+            $this->setGet('tags', implode(',', $this->tags), false);
+        }
+    }
+
+    /**
+     * (optional)
+     * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
+     *
+     * @param integer $limit
+     * @return Lists
+     * @throws \Exception
+     */
+    public function setResultLimit($limit)
+    {
+        if ((int)$limit > self::MAXLIMIT) {
+            throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
+        }
+
+        $this->setGet('result_limit', (int)$limit);
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
+     *
+     * @param integer $offset
+     * @return Lists
+     */
+    public function setResultOffset($offset)
+    {
+        $this->setGet('result_offset', (int)$offset);
+        return $this;
+    }
+
+    /**
+     * Get next page of results
+     * Returns null if no next page
+     *
+     * @return null|Response
+     * @throws \Exception
+     */
+    public function getNextResults()
+    {
+        if (! $this->getResponse() instanceof Response) {
+            throw new \Exception('You have not send any query yet');
+        }
+
+        $data = $this->getResponse()->json();
+        $total = (int)$data['total'];
+        $offset = (int)$data['offset'];
+        $limit = (int)$data['limit'];
+
+        if ($total > ($offset + $limit)) {
+            return $this
+                ->setResultOffset($offset + $limit)
+                ->send();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get previous page of results
+     * Returns null if no previous page
+     *
+     * @return null|Response
+     * @throws \Exception
+     */
+    public function getPrevResults()
+    {
+        if (! $this->getResponse() instanceof Response) {
+            throw new \Exception('You have not send any query yet');
+        }
+
+        $data = $this->getResponse()->json();
+        $offset = (int)$data['offset'];
+        $limit = (int)$data['limit'];
+
+        if ($offset > 0) {
+            $newoffset = $offset - $limit;
+            return $this
+                ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
+                ->send();
+        }
+
+        return null;
+    }
+
+    /**
+     * (optional)
+     * UTC date starting from which videos should be returned.
+     * Default is the first day of the current month.
+     *
+     * @param \DateTime $date
+     * @return Lists
+     */
+    public function setStartDate(\DateTime $date)
+    {
+        $this->setGet('start_date', $date->getTimestamp());
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * UTC date until (and including) which videos should be returned.
+     * Default is today’s date.
+     *
+     * @param \DateTime $date
+     * @return Lists
+     */
+    public function setEndDate(\DateTime $date)
+    {
+        $this->setGet('end_date', $date->getTimestamp());
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * Specifies parameters by which returned result should be ordered.
+     * Default sort order is ascending and can be omitted.
+     * Multiple parameters should be separated by comma.
+     *
+     * @param string $orderBy
+     * @param string $order
+     * @return Lists
+     */
+    public function setOrderBy($orderBy, $order = 'asc')
+    {
+        $this->setGet('order_by', $orderBy . ':' . $order);
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * Set what you want to search for
+     *
+     * @param SearchObject $search
+     * @return Lists
+     */
+    public function setSearch(SearchObject $search)
+    {
+        $this->setGet('search', $search->__toString());
+        return $this;
     }
 
 } 
