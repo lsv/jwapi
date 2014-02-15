@@ -8,30 +8,22 @@
  * @license http://opensource.org/licenses/MIT
  * @author Martin Aarhof <martin.aarhof@gmail.com>
  */
-namespace Jwapi\Videos;
+namespace Jwapi\Videos\Engagement;
 
 use Jwapi\Api\Api;
-use Jwapi\Traits;
 
 /**
- * Remove a video and all of its conversions from the server.
- * @package Jwapi\Videos
+ * Displays engagement analytics for a single video.
+ * @package Jwapi\Videos\Engagement
  */
-class Delete extends Api
+class Show extends Api
 {
     //use Traits\VideoKey;
 
     /**
      * {@inherit}
      */
-    protected $path = '/videos/delete';
-
-    /**
-     * {@inherit}
-     */
-    protected $required = array(
-        'video_key'
-    );
+    protected $path = '/videos/engagement/show';
 
     /**
      * (required)

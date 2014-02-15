@@ -13,7 +13,6 @@ namespace Jwapi\Videos;
 use Guzzle\Http\Message\Response;
 use Jwapi\Api\Api;
 use Jwapi\Traits;
-use Jwapi\Search as SearchObject;
 
 /**
  * Return a list of videos.
@@ -49,7 +48,7 @@ class Lists extends Api
      * Tag modes
      * @var array
      */
-    static private $tagsmodes = array(
+    private static $tagsmodes = array(
         self::TAGS_ALL,
         self::TAGS_ANY
     );
@@ -76,7 +75,7 @@ class Lists extends Api
      * Mediafilters
      * @var array
      */
-    static private $mediafilters = array(
+    private static $mediafilters = array(
         self::MEDIAFILTER_UNKNOWN,
         self::MEDIAFILTER_AUDIO,
         self::MEDIAFILTER_VIDEO
@@ -116,7 +115,7 @@ class Lists extends Api
      * Statusfilters
      * @var array
      */
-    static private $statusfilters = array(
+    private static $statusfilters = array(
         self::STATUSFILTER_CREATED,
         self::STATUSFILTER_PROCESSING,
         self::STATUSFILTER_READY,
@@ -141,7 +140,7 @@ class Lists extends Api
      * TAGS_ALL: A video will only be listed if it has all tags specified in the tags parameter.
      * TAGS_ANY: A video will be listed if it has at least one tag specified in the tags parameter.
      *
-     * @param string $mode
+     * @param  string $mode
      * @return Lists
      *
      * @throws \InvalidArgumentException
@@ -150,6 +149,7 @@ class Lists extends Api
     {
         if (in_array($mode, self::$tagsmodes)) {
             $this->setGet('tags_mode', $mode);
+
             return $this;
         }
 
@@ -164,7 +164,7 @@ class Lists extends Api
      * MEDIAFILTER_AUDIO: List only videos with media type audio.
      * MEDIAFILTER_VIDEO: List only videos with media type video.
      *
-     * @param string $mediafilter
+     * @param  string $mediafilter
      * @return Lists
      *
      * @throws \InvalidArgumentException
@@ -173,6 +173,7 @@ class Lists extends Api
     {
         if (in_array($mediafilter, self::$mediafilters)) {
             $this->setGet('mediatypes_filter', $mediafilter);
+
             return $this;
         }
 
@@ -188,7 +189,7 @@ class Lists extends Api
      * STATUSFILTER_UPDATING: List only videos with status updating.
      * STATUSFILTER_FAILED: List only videos with status failed.
      *
-     * @param string $statusfilter
+     * @param  string $statusfilter
      * @return Lists
      *
      * @throws \InvalidArgumentException
@@ -197,6 +198,7 @@ class Lists extends Api
     {
         if (in_array($statusfilter, self::$statusfilters)) {
             $this->setGet('statuses_filter', $statusfilter);
+
             return $this;
         }
 
@@ -215,14 +217,15 @@ class Lists extends Api
      * (optional)
      * Set multiple tags
      *
-     * @param array $tags
+     * @param  array $tags
      * @return Lists
      */
     public function setTags(array $tags)
     {
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $this->addTag($tag);
         }
+
         return $this;
     }
 
@@ -230,12 +233,13 @@ class Lists extends Api
      * (optional)
      * Add a single tag
      *
-     * @param string $tag
+     * @param  string $tag
      * @return Lists
      */
     public function addTag($tag)
     {
         $this->tags[] = $tag;
+
         return $this;
     }
 
@@ -253,17 +257,18 @@ class Lists extends Api
      * (optional)
      * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
      *
-     * @param integer $limit
+     * @param  integer    $limit
      * @return Lists
      * @throws \Exception
      */
     public function setResultLimit($limit)
     {
-        if ((int)$limit > self::MAXLIMIT) {
+        if ((int) $limit > self::MAXLIMIT) {
             throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
         }
 
-        $this->setGet('result_limit', (int)$limit);
+        $this->setGet('result_limit', (int) $limit);
+
         return $this;
     }
 
@@ -271,12 +276,13 @@ class Lists extends Api
      * (optional)
      * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
      *
-     * @param integer $offset
+     * @param  integer $offset
      * @return Lists
      */
     public function setResultOffset($offset)
     {
-        $this->setGet('result_offset', (int)$offset);
+        $this->setGet('result_offset', (int) $offset);
+
         return $this;
     }
 
@@ -294,9 +300,9 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $total = (int)$data['total'];
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $total = (int) $data['total'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($total > ($offset + $limit)) {
             return $this
@@ -321,11 +327,12 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($offset > 0) {
             $newoffset = $offset - $limit;
+
             return $this
                 ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
                 ->send();
@@ -339,12 +346,13 @@ class Lists extends Api
      * UTC date starting from which videos should be returned.
      * Default is the first day of the current month.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setStartDate(\DateTime $date)
     {
         $this->setGet('start_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -353,12 +361,13 @@ class Lists extends Api
      * UTC date until (and including) which videos should be returned.
      * Default is today’s date.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setEndDate(\DateTime $date)
     {
         $this->setGet('end_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -368,13 +377,14 @@ class Lists extends Api
      * Default sort order is ascending and can be omitted.
      * Multiple parameters should be separated by comma.
      *
-     * @param string $orderBy
-     * @param string $order
+     * @param  string $orderBy
+     * @param  string $order
      * @return Lists
      */
     public function setOrderBy($orderBy, $order = 'asc')
     {
         $this->setGet('order_by', $orderBy . ':' . $order);
+
         return $this;
     }
 
@@ -382,13 +392,13 @@ class Lists extends Api
      * (optional)
      * Set what you want to search for
      *
-     * @param SearchObject $search
+     * @param  string $search
      * @return Lists
      */
-    public function setSearch(SearchObject $search)
+    public function setSearch($search)
     {
-        $this->setGet('search', $search->__toString());
+        $this->setGet('search', $search);
+
         return $this;
     }
-
-} 
+}

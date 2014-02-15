@@ -24,5 +24,4 @@ class Search
     {
         return '';
     }
-
-} 
+}

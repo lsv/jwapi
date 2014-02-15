@@ -112,13 +112,13 @@ abstract class Api
      *
      * @param string $apikey
      * @param string $secret
-     * @param bool $useHttps
+     * @param bool   $useHttps
      */
     public function __construct($apikey, $secret, $useHttps = true)
     {
         $this->apikey = $apikey;
         $this->apisecret = $secret;
-        $this->https = (bool)$useHttps;
+        $this->https = (bool) $useHttps;
         $this->setGet('api_format', 'json');
     }
 
@@ -222,7 +222,7 @@ abstract class Api
     /**
      * Send our request
      *
-     * @param bool $checkstatus
+     * @param  bool     $checkstatus
      * @return Response
      */
     public function send($checkstatus = true)
@@ -234,6 +234,7 @@ abstract class Api
         if ($checkstatus) {
             $this->checkStatus();
         }
+
         return $this->afterRun();
     }
 
@@ -245,7 +246,7 @@ abstract class Api
     private function checkRequired()
     {
         $errors = array();
-        foreach($this->required as $key) {
+        foreach ($this->required as $key) {
             if (! $this->issetGet($key)) {
                 $errors[] = $key;
             }
@@ -254,7 +255,7 @@ abstract class Api
         // Ignored because no manual method to get these
         // @codeCoverageIgnoreStart
         if ($this->method == 'POST') {
-            foreach($this->requiredPost as $key) {
+            foreach ($this->requiredPost as $key) {
                 if (! $this->issetPost($key)) {
                     $errors[] = $key;
                 }
@@ -291,7 +292,7 @@ abstract class Api
     /**
      * Sets the response
      *
-     * @param RequestInterface $request
+     * @param  RequestInterface $request
      * @return Response
      */
     protected function setResponse(RequestInterface $request)
@@ -305,7 +306,6 @@ abstract class Api
             $this->response = $exception->getResponse();
         }
         // @codeCoverageIgnoreEnd
-
         return $this->response;
     }
 
@@ -330,7 +330,7 @@ abstract class Api
     /**
      * Check if GET isset
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     protected function issetGet($key)
@@ -345,14 +345,15 @@ abstract class Api
     /**
      * Set GET
      *
-     * @param string $key
-     * @param string $value
-     * @param boolean $encode
+     * @param  string  $key
+     * @param  string  $value
+     * @param  boolean $encode
      * @return Api
      */
     protected function setGet($key, $value, $encode = true)
     {
         $this->gets[$key] = ($encode ? urlencode($value) : $value);
+
         return $this;
     }
 
@@ -375,7 +376,7 @@ abstract class Api
             ksort($this->gets);
 
             $signature = array();
-            foreach($this->gets as $k => $v) {
+            foreach ($this->gets as $k => $v) {
                 if ($k == 'api_signature') {
                     continue;
                 }
@@ -392,8 +393,11 @@ abstract class Api
     /**
      * Check if POST isset
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
+     *
+     * Ignored because no manual method to get these
+     * @codeCoverageIgnore
      */
     protected function issetPost($key)
     {
@@ -407,14 +411,15 @@ abstract class Api
     /**
      * Set POST
      *
-     * @param string $key
-     * @param string $value
+     * @param  string $key
+     * @param  string $value
      * @return Api
      */
     protected function setPost($key, $value)
     {
         $this->method = 'POST';
         $this->posts[$key] = $value;
+
         return $this;
     }
 
@@ -431,7 +436,7 @@ abstract class Api
     /**
      * Set Boolean value
      *
-     * @param bool $bool
+     * @param  bool   $bool
      * @return string
      */
     protected function setBoolean($bool)
@@ -442,7 +447,7 @@ abstract class Api
     /**
      * Get Boolean value
      *
-     * @param string $bool
+     * @param  string $bool
      * @return bool
      *
      * @codeCoverageIgnore
@@ -451,5 +456,4 @@ abstract class Api
     {
         return $bool == 'True' ? true : false;
     }
-
-} 
+}

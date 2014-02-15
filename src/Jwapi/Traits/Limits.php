@@ -23,17 +23,18 @@ trait Limits
      * (optional)
      * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
      *
-     * @param integer $limit
+     * @param  integer    $limit
      * @return Limits
      * @throws \Exception
      */
     public function setResultLimit($limit)
     {
-        if ((int)$limit > self::MAXLIMIT) {
+        if ((int) $limit > self::MAXLIMIT) {
             throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
         }
 
-        $this->setGet('result_limit', (int)$limit);
+        $this->setGet('result_limit', (int) $limit);
+
         return $this;
     }
 
@@ -41,12 +42,13 @@ trait Limits
      * (optional)
      * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
      *
-     * @param integer $offset
+     * @param  integer $offset
      * @return Limits
      */
     public function setResultOffset($offset)
     {
-        $this->setGet('result_offset', (int)$offset);
+        $this->setGet('result_offset', (int) $offset);
+
         return $this;
     }
 
@@ -64,9 +66,9 @@ trait Limits
         }
 
         $data = $this->getResponse()->json();
-        $total = (int)$data['total'];
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $total = (int) $data['total'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($total > ($offset + $limit)) {
             return $this
@@ -91,11 +93,12 @@ trait Limits
         }
 
         $data = $this->getResponse()->json();
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($offset > 0) {
             $newoffset = $offset - $limit;
+
             return $this
                 ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
                 ->send();
@@ -104,4 +107,4 @@ trait Limits
         return null;
     }
 
-} 
+}

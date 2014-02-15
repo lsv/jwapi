@@ -50,24 +50,27 @@ class Update extends Api
      * Key of the video you want data for.
      *
      * @param string $key
-     * @return $this
+     *                    @return $this
      */
     public function setVideoKey($key)
     {
         $this->setGet('video_key', $key);
+
         return $this;
     }
 
     /**
      * (optional)
-     * Video frame position in seconds from which thumbnail should be generated. Seconds can be given as a whole number (e.g: 7) or with the fractions (e.g.: 7.42).
+     * Video frame position in seconds from which thumbnail should be generated.
+     * Seconds can be given as a whole number (e.g: 7) or with the fractions (e.g.: 7.42).
      *
-     * @param float $position
+     * @param  float  $position
      * @return Update
      */
     public function setPosition($position)
     {
-        $this->setGet('position', (float)$position);
+        $this->setGet('position', (float) $position);
+
         return $this;
     }
 
@@ -75,12 +78,13 @@ class Update extends Api
      * (optional)
      * Index of the image in the thumbnail strip to use as a video thumbnail. Thumbnail index starts from 1.
      *
-     * @param integer $index
+     * @param  integer $index
      * @return Update
      */
     public function setThumbnailIndex($index)
     {
-        $this->setGet('thumbnail_index', (int)$index);
+        $this->setGet('thumbnail_index', (int) $index);
+
         return $this;
     }
 
@@ -88,12 +92,13 @@ class Update extends Api
      * (optional)
      * Set the thumbnail file
      *
-     * @param SplFileInfo $file
+     * @param  SplFileInfo $file
      * @return Update
      */
     public function setImageFile(SplFileInfo $file)
     {
         $this->file = $file;
+
         return $this;
     }
 
@@ -101,12 +106,13 @@ class Update extends Api
      * (optional)
      * Thumbnail file MD5 message digest. If supplied, it will be checked by the API.
      *
-     * @param string $md5
+     * @param  string $md5
      * @return Update
      */
     public function setMd5($md5)
     {
         $this->setGet('md5', $md5);
+
         return $this;
     }
 
@@ -114,12 +120,13 @@ class Update extends Api
      * (optional)
      * Thumbnail file size. If supplied, it will be checked by the API.
      *
-     * @param integer $size
+     * @param  integer $size
      * @return Update
      */
     public function setSize($size)
     {
-        $this->setGet('size', (int)$size);
+        $this->setGet('size', (int) $size);
+
         return $this;
     }
 
@@ -139,16 +146,26 @@ class Update extends Api
     }
 
     /**
-     * {@inherit}
+     * Upload file
+     *
+     * @return \Guzzle\Http\Message\Response
      */
-    protected function afterRun()
+    protected function fileUpload()
     {
         if ($this->file instanceof SplFileInfo) {
             $upload = new Upload($this, $this->file, $this->fileupload);
+
             return $upload->send(false);
         }
 
         return parent::afterRun();
     }
 
-} 
+    /**
+     * {@inherit}
+     */
+    protected function afterRun()
+    {
+        return $this->fileUpload();
+    }
+}

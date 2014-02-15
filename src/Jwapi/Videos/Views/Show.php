@@ -32,11 +32,12 @@ class Show extends Api
      * Key of the video you want data for.
      *
      * @param string $key
-     * @return $this
+     *                    @return $this
      */
     public function setVideoKey($key)
     {
         $this->setGet('video_key', $key);
+
         return $this;
     }
 
@@ -45,12 +46,13 @@ class Show extends Api
      * UTC date starting from which videos should be returned.
      * Default is the first day of the current month.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setStartDate(\DateTime $date)
     {
         $this->setGet('start_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -59,12 +61,13 @@ class Show extends Api
      * UTC date until (and including) which videos should be returned.
      * Default is today’s date.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setEndDate(\DateTime $date)
     {
         $this->setGet('end_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -74,12 +77,13 @@ class Show extends Api
      * True: Group daily video views statistics by year and month.
      * False: Do not group daily video views.
      *
-     * @param bool $groupDays
+     * @param  bool $groupDays
      * @return Show
      */
     public function setGroupDays($groupDays = false)
     {
         $this->setGet('group_days', $this->setBoolean($groupDays));
+
         return $this;
     }
 
@@ -89,13 +93,13 @@ class Show extends Api
      * True: Daily views statistics will include empty days. Video views for the empty days will be set to 0.
      * False: Daily views statistics will not include empty days.
      *
-     * @param bool $includeEmptyDays
+     * @param  bool $includeEmptyDays
      * @return Show
      */
     public function setIncludeEmptyDays($includeEmptyDays = false)
     {
         $this->setGet('include_empty_days', $this->setBoolean($includeEmptyDays));
+
         return $this;
     }
-
-} 
+}

@@ -62,14 +62,15 @@ class Create extends Api
      * (optional)
      * Set multiple tags
      *
-     * @param array $tags
+     * @param  array $tags
      * @return Tags
      */
     public function setTags(array $tags)
     {
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $this->addTag($tag);
         }
+
         return $this;
     }
 
@@ -77,12 +78,13 @@ class Create extends Api
      * (optional)
      * Add a single tag
      *
-     * @param string $tag
+     * @param  string $tag
      * @return Tags
      */
     public function addTag($tag)
     {
         $this->tags[] = $tag;
+
         return $this;
     }
 
@@ -100,12 +102,13 @@ class Create extends Api
      * (optional)
      * Title of the video.
      *
-     * @param string $title
+     * @param  string $title
      * @return Create
      */
     public function setTitle($title)
     {
         $this->setGet('title', $title);
+
         return $this;
     }
 
@@ -113,12 +116,13 @@ class Create extends Api
      * (optional)
      * Description of the video.
      *
-     * @param string $description
+     * @param  string $description
      * @return Create
      */
     public function setDescription($description)
     {
         $this->setGet('description', $description);
+
         return $this;
     }
 
@@ -126,12 +130,13 @@ class Create extends Api
      * (optional)
      * Author of the video.
      *
-     * @param string $author
+     * @param  string $author
      * @return Create
      */
     public function setAuthor($author)
     {
         $this->setGet('author', $author);
+
         return $this;
     }
 
@@ -139,12 +144,13 @@ class Create extends Api
      * (optional)
      * Video creation date.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Create
      */
     public function setDate(\DateTime $date)
     {
         $this->setGet('date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -152,12 +158,13 @@ class Create extends Api
      * (optional)
      * The URL of the web page where this video is published.
      *
-     * @param string $link
+     * @param  string $link
      * @return Create
      */
     public function setLink($link)
     {
         $this->setGet('link', $link);
+
         return $this;
     }
 
@@ -166,12 +173,13 @@ class Create extends Api
      * URL from where to fetch a video file. Video file will be downloaded and processed on the server using this URL.
      * ALERT: Only URLs with the http protocol are supported.
      *
-     * @param string $url
+     * @param  string $url
      * @return Create
      */
     public function setDownloadUrl($url)
     {
         $this->setGet('download_url', $url);
+
         return $this;
     }
 
@@ -183,8 +191,8 @@ class Create extends Api
      * name cannot start with a number or punctuation character
      * name cannot contain spaces
      *
-     * @param string $key
-     * @param string $value
+     * @param  string $key
+     * @param  string $value
      * @return Create
      *
      * @throws \Exception
@@ -199,6 +207,7 @@ class Create extends Api
         }
 
         $this->customParameters[$key] = $value;
+
         return $this;
     }
 
@@ -208,16 +217,28 @@ class Create extends Api
      *
      * @see addCustomParameter
      *
-     * @param array $parameters
+     * @param  array  $parameters
      * @return Create
      */
     public function setCustomParameters(array $parameters)
     {
-        foreach($parameters as $k => $v) {
+        foreach ($parameters as $k => $v) {
             $this->addCustomParameter($k, $v);
         }
 
         return $this;
+    }
+
+    /**
+     * {@inherit}
+     */
+    protected function beforeCustomParameters()
+    {
+        if ($this->customParameters) {
+            foreach ($this->customParameters as $k => $v) {
+                $this->setGet(urlencode('custom.' . $k), $v);
+            }
+        }
     }
 
     /**
@@ -226,12 +247,13 @@ class Create extends Api
      * it will be compared with the MD5 digest calculated for the received video file.
      * Uploaded video will be rejected if MD5 message digests do not match.
      *
-     * @param string $md5
+     * @param  string $md5
      * @return Create
      */
     public function setMd5($md5)
     {
         $this->setGet('md5', $md5);
+
         return $this;
     }
 
@@ -241,12 +263,13 @@ class Create extends Api
      * True: Video will be uploaded using resumable protocol.
      * False: Video will be uploaded using non-resumable protocol.
      *
-     * @param boolean $resumeable
+     * @param  boolean $resumeable
      * @return Create
      */
     public function isResumeable($resumeable)
     {
         $this->setGet('resumable', $this->setBoolean($resumeable));
+
         return $this;
     }
 
@@ -255,12 +278,13 @@ class Create extends Api
      * Video file size. If supplied, it will be compared with the size of the received video file.
      * Uploaded video will be rejected if the sizes do not match.
      *
-     * @param integer $size
+     * @param  integer $size
      * @return Create
      */
     public function setSize($size)
     {
-        $this->setGet('size', (int)$size);
+        $this->setGet('size', (int) $size);
+
         return $this;
     }
 
@@ -268,12 +292,13 @@ class Create extends Api
      * (optional)
      * Set the video file which should be uploaded
      *
-     * @param SplFileInfo $file
+     * @param  SplFileInfo $file
      * @return Create
      */
     public function setVideoFile(SplFileInfo $file)
     {
         $this->file = $file;
+
         return $this;
     }
 
@@ -284,12 +309,7 @@ class Create extends Api
     protected function beforeRun()
     {
         $this->beforeTags();
-
-        if ($this->customParameters) {
-            foreach($this->customParameters as $k => $v) {
-                $this->setGet(urlencode('custom.' . $k), $v);
-            }
-        }
+        $this->beforeCustomParameters();
 
         if ($this->issetGet('download_url') && $this->file != '') {
             throw new \InvalidArgumentException('Create video: Both download url and video file is set');
@@ -308,10 +328,10 @@ class Create extends Api
     {
         if ($this->file instanceof SplFileInfo) {
             $upload = new Upload($this, $this->file, $this->fileupload);
+
             return $upload->send(false);
         }
 
         return parent::afterRun();
     }
-
-} 
+}

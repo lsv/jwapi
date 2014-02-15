@@ -23,13 +23,14 @@ trait Aggregate
      * True: Aggregate videos daily views for the specified date range.
      * False: Do not aggregate videos daily views.
      *
-     * @param bool $aggregate
+     * @param  bool      $aggregate
      * @return Aggregate
      */
     public function setAggregate($aggregate = false)
     {
         $this->setGet('aggregate', $this->setBoolean($aggregate));
+
         return $this;
     }
 
-} 
+}

@@ -23,13 +23,14 @@ trait Search
      * (optional)
      * Set what you want to search for
      *
-     * @param SearchObject $search
+     * @param  SearchObject $search
      * @return Search
      */
     public function setSearch(SearchObject $search)
     {
         $this->setGet('search', $search->__toString());
+
         return $this;
     }
 
-} 
+}

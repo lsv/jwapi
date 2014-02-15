@@ -22,12 +22,13 @@ trait Dates
      * UTC date starting from which videos should be returned.
      * Default is the first day of the current month.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Dates
      */
     public function setStartDate(\DateTime $date)
     {
         $this->setGet('start_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -36,13 +37,14 @@ trait Dates
      * UTC date until (and including) which videos should be returned.
      * Default is today’s date.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Dates
      */
     public function setEndDate(\DateTime $date)
     {
         $this->setGet('end_date', $date->getTimestamp());
+
         return $this;
     }
 
-} 
+}

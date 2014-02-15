@@ -64,12 +64,13 @@ class Lists extends Api
      * True: Aggregate videos daily views for the specified date range.
      * False: Do not aggregate videos daily views.
      *
-     * @param bool $aggregate
+     * @param  bool  $aggregate
      * @return Lists
      */
     public function setAggregate($aggregate = false)
     {
         $this->setGet('aggregate', $this->setBoolean($aggregate));
+
         return $this;
     }
 
@@ -77,12 +78,13 @@ class Lists extends Api
      * (optional)
      * Set what you want to search for
      *
-     * @param SearchObject $search
+     * @param  SearchObject $search
      * @return Search
      */
     public function setSearch(SearchObject $search)
     {
         $this->setGet('search', $search->__toString());
+
         return $this;
     }
 
@@ -92,12 +94,13 @@ class Lists extends Api
      * LISTBY_VIDEO: Videos views statistics listed by a video
      * LISTBY_DAY: Videos views statistics listed by a day.
      *
-     * @param string $listby
+     * @param  string $listby
      * @return Lists
      */
     public function setListBy($listby = self::LISTBY_VIDEO)
     {
         $this->setGet('list_by', $listby);
+
         return $this;
     }
 
@@ -107,12 +110,13 @@ class Lists extends Api
      * True: Group daily videos views statistics by year and month.
      * False: Do not group daily videos views.
      *
-     * @param bool $groupbydays
+     * @param  bool  $groupbydays
      * @return Lists
      */
     public function setGroupByDays($groupbydays = false)
     {
         $this->setGet('group_days', $this->setBoolean($groupbydays));
+
         return $this;
     }
 
@@ -122,12 +126,13 @@ class Lists extends Api
      * STATUS_FILTER_ACTIVE: List only videos with status active.
      * STATUS_FILTER_DELETED: List only videos with status deleted.
      *
-     * @param string $statusfilter
+     * @param  string $statusfilter
      * @return Lists
      */
     public function setStatusFilter($statusfilter = self::STATUS_FILTER_ACTIVE)
     {
         $this->setGet('statuses_filter', $statusfilter);
+
         return $this;
     }
 
@@ -137,12 +142,13 @@ class Lists extends Api
      * True: Daily views statistics will include empty days. Videos views for the empty days will be set to 0.
      * False: Daily views statistics will not include empty days.
      *
-     * @param bool $includeEmptyDays
+     * @param  bool  $includeEmptyDays
      * @return Lists
      */
     public function setIncludeEmptyDays($includeEmptyDays = false)
     {
         $this->setGet('include_empty_days', $this->setBoolean($includeEmptyDays));
+
         return $this;
     }
 
@@ -151,12 +157,13 @@ class Lists extends Api
      * UTC date starting from which videos should be returned.
      * Default is the first day of the current month.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setStartDate(\DateTime $date)
     {
         $this->setGet('start_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -165,12 +172,13 @@ class Lists extends Api
      * UTC date until (and including) which videos should be returned.
      * Default is today’s date.
      *
-     * @param \DateTime $date
+     * @param  \DateTime $date
      * @return Lists
      */
     public function setEndDate(\DateTime $date)
     {
         $this->setGet('end_date', $date->getTimestamp());
+
         return $this;
     }
 
@@ -178,17 +186,18 @@ class Lists extends Api
      * (optional)
      * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
      *
-     * @param integer $limit
+     * @param  integer    $limit
      * @return Lists
      * @throws \Exception
      */
     public function setResultLimit($limit)
     {
-        if ((int)$limit > self::MAXLIMIT) {
+        if ((int) $limit > self::MAXLIMIT) {
             throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
         }
 
-        $this->setGet('result_limit', (int)$limit);
+        $this->setGet('result_limit', (int) $limit);
+
         return $this;
     }
 
@@ -196,12 +205,13 @@ class Lists extends Api
      * (optional)
      * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
      *
-     * @param integer $offset
+     * @param  integer $offset
      * @return Lists
      */
     public function setResultOffset($offset)
     {
-        $this->setGet('result_offset', (int)$offset);
+        $this->setGet('result_offset', (int) $offset);
+
         return $this;
     }
 
@@ -219,9 +229,9 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $total = (int)$data['total'];
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $total = (int) $data['total'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($total > ($offset + $limit)) {
             return $this
@@ -246,11 +256,12 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($offset > 0) {
             $newoffset = $offset - $limit;
+
             return $this
                 ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
                 ->send();
@@ -265,14 +276,14 @@ class Lists extends Api
      * Default sort order is ascending and can be omitted.
      * Multiple parameters should be separated by comma.
      *
-     * @param string $orderBy
-     * @param string $order
+     * @param  string $orderBy
+     * @param  string $order
      * @return Lists
      */
     public function setOrderBy($orderBy, $order = 'asc')
     {
         $this->setGet('order_by', $orderBy . ':' . $order);
+
         return $this;
     }
-
-} 
+}

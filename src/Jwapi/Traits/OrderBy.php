@@ -23,14 +23,15 @@ trait OrderBy
      * Default sort order is ascending and can be omitted.
      * Multiple parameters should be separated by comma.
      *
-     * @param string $orderBy
-     * @param string $order
+     * @param  string  $orderBy
+     * @param  string  $order
      * @return OrderBy
      */
     public function setOrderBy($orderBy, $order = 'asc')
     {
         $this->setGet('order_by', $orderBy . ':' . $order);
+
         return $this;
     }
 
-} 
+}
