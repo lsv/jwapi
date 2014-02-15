@@ -3,15 +3,17 @@
     <title>JW API</title>
     <parser>
         <target>build/documentation</target>
+        <visibility>public</visibility>
     </parser>
     <transformer>
         <target>build/documentation</target>
     </transformer>
     <files>
         <directory>src/Jwapi</directory>
+        <ignore>src/Jwapi/Traits/*</ignore>
     </files>
     <transformations>
-        <template name="clean"/>
+        <template name="responsive-twig"/>
     </transformations>
     <logging>
         <level>warn</level>

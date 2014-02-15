@@ -6,3 +6,4 @@ report: ./build/logs/apigen.log
 php: No
 templateConfig: './vendor/apigen/apigen/templates/bootstrap/config.neon'
 quiet: Yes
+skipDocPrefix: Jwapi\Traits

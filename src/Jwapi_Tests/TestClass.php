@@ -75,7 +75,7 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
 
     private function getFileUrl($file)
     {
-        return 'http://web3.superliga.dk/fileadmin/TESTFILES/' . $file;
+        return 'http://home.aarhof.eu/jwapi-test/' . $file;
     }
 
     /**
@@ -125,6 +125,16 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         foreach($values as $key => $val) {
             $this->assertArrayHasKey($key, $query);
             $this->assertEquals($query[$key], $val);
+        }
+    }
+
+    protected function validateResponse($response, $msg)
+    {
+        if (is_array($response)) {
+            $this->assertArrayHasKey('status', $response, $msg . "\n" . print_r($response, true));
+            $this->assertEquals(Api::STATUS_OK, $response['status'], $msg . "\n" . $response['status']);
+        } else {
+            $this->assertFalse(true, 'Response is not a array:' . "\n\n" . $response . "\n\n" . $msg);
         }
     }
 

@@ -11,6 +11,7 @@ do
     fi
 done
 
-./vendor/bin/phpdoc.php -q
+#./vendor/bin/phpdoc.php -q
+./vendor/bin/phpcs --report-file=./build/logs/phpcs.log --standard=PSR2 ./src/Jwapi
 ./vendor/bin/apigen.php --config ./apigen.neon
 ./vendor/bin/phpunit -c ./phpunit.dist.xml

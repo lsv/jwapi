@@ -29,12 +29,13 @@ class Lists extends Api
     /**
      * Case-insensitive search in the name tag field. It will list all tags which name contains search string.
      *
-     * @param string $search
+     * @param  string $search
      * @return Lists
      */
     public function setSearch($search)
     {
         $this->setGet('search', $search);
+
         return $this;
     }
 
@@ -42,17 +43,18 @@ class Lists extends Api
      * (optional)
      * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
      *
-     * @param integer $limit
+     * @param  integer    $limit
      * @return Lists
      * @throws \Exception
      */
     public function setResultLimit($limit)
     {
-        if ((int)$limit > self::MAXLIMIT) {
+        if ((int) $limit > self::MAXLIMIT) {
             throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
         }
 
-        $this->setGet('result_limit', (int)$limit);
+        $this->setGet('result_limit', (int) $limit);
+
         return $this;
     }
 
@@ -60,12 +62,13 @@ class Lists extends Api
      * (optional)
      * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
      *
-     * @param integer $offset
+     * @param  integer $offset
      * @return Lists
      */
     public function setResultOffset($offset)
     {
-        $this->setGet('result_offset', (int)$offset);
+        $this->setGet('result_offset', (int) $offset);
+
         return $this;
     }
 
@@ -83,9 +86,9 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $total = (int)$data['total'];
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $total = (int) $data['total'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($total > ($offset + $limit)) {
             return $this
@@ -110,11 +113,12 @@ class Lists extends Api
         }
 
         $data = $this->getResponse()->json();
-        $offset = (int)$data['offset'];
-        $limit = (int)$data['limit'];
+        $offset = (int) $data['offset'];
+        $limit = (int) $data['limit'];
 
         if ($offset > 0) {
             $newoffset = $offset - $limit;
+
             return $this
                 ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
                 ->send();
@@ -129,14 +133,14 @@ class Lists extends Api
      * Default sort order is ascending and can be omitted.
      * Multiple parameters should be separated by comma.
      *
-     * @param string $orderBy
-     * @param string $order
+     * @param  string $orderBy
+     * @param  string $order
      * @return Lists
      */
     public function setOrderBy($orderBy, $order = 'asc')
     {
         $this->setGet('order_by', $orderBy . ':' . $order);
+
         return $this;
     }
-
-} 
+}

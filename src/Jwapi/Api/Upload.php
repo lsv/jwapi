@@ -27,16 +27,17 @@ class Upload extends Api
     /**
      * Create our second level request for posting items
      *
-     * @param Api $api
+     * @param Api         $api
      * @param SplFileInfo $file
-     * @param bool $method
+     * @param bool        $method
      */
     public function __construct(Api $api, SplFileInfo $file, $method)
     {
         $data = $api->getResponse()->json();
         parent::__construct($api->getApiKey(), $api->getApiSecret(), $api->getHttps());
 
-        $this->path = sprintf('%s://%s%s',
+        $this->path = sprintf(
+            '%s://%s%s',
             $data['link']['protocol'],
             $data['link']['address'],
             $data['link']['path']
@@ -56,5 +57,4 @@ class Upload extends Api
     {
         $this->authenticate = false;
     }
-
-} 
+}

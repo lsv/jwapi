@@ -27,14 +27,15 @@ trait Tags
      * (optional)
      * Set multiple tags
      *
-     * @param array $tags
+     * @param  array $tags
      * @return Tags
      */
     public function setTags(array $tags)
     {
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $this->addTag($tag);
         }
+
         return $this;
     }
 
@@ -42,12 +43,13 @@ trait Tags
      * (optional)
      * Add a single tag
      *
-     * @param string $tag
+     * @param  string $tag
      * @return Tags
      */
     public function addTag($tag)
     {
         $this->tags[] = $tag;
+
         return $this;
     }
 

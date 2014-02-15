@@ -4,7 +4,7 @@ namespace Jwapi_Tests\Videos;
 use Jwapi\Videos\Lists;
 use Jwapi_Tests\TestClass;
 
-class ListsTest extends TestClass
+class VideosListsTest extends TestClass
 {
 
     public function test_CanListVideos()
