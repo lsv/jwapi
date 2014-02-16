@@ -48,6 +48,9 @@ class Create extends Api
      */
     private $customParameters = array();
 
+    /**
+     * {@inherit}
+     */
     protected $requiredPost = array(
         'file'
     );
