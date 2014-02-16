@@ -22,7 +22,7 @@ trait VideoKey
      * Key of the video you want data for.
      *
      * @param string $key
-     *                    @return $this
+     * @return $this
      */
     public function setVideoKey($key)
     {

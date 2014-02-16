@@ -27,13 +27,13 @@ class Lists extends Api
     use Traits\Search;
 
     /**
-     * Search by all tags
+     * A video will only be listed if it has all tags specified in the tags parameter.
      * @var string
      */
     const TAGS_ALL = 'all';
 
     /**
-     * Search by any tags
+     * A video will be listed if it has at least one tag specified in the tags parameter.
      * @var string
      */
     const TAGS_ANY = 'any';
@@ -48,19 +48,19 @@ class Lists extends Api
     );
 
     /**
-     * Search by unknown medias
+     * List only videos with media type unknown.
      * @var string
      */
     const MEDIAFILTER_UNKNOWN = 'unknown';
 
     /**
-     * Search by audio medias
+     * List only videos with media type audio.
      * @var string
      */
     const MEDIAFILTER_AUDIO = 'audio';
 
     /**
-     * Search by video medias
+     * List only videos with media type video.
      * @var string
      */
     const MEDIAFILTER_VIDEO = 'video';
@@ -76,31 +76,31 @@ class Lists extends Api
     );
 
     /**
-     * Search by created videos
+     * List only videos with status created.
      * @var string
      */
     const STATUSFILTER_CREATED = 'created';
 
     /**
-     * Search by processing videos
+     * List only videos with status processing.
      * @var string
      */
     const STATUSFILTER_PROCESSING = 'processing';
 
     /**
-     * Search by ready videos
+     * List only videos with status ready.
      * @var string
      */
     const STATUSFILTER_READY = 'ready';
 
     /**
-     * Search by updating videos
+     * List only videos with status updating.
      * @var string
      */
     const STATUSFILTER_UPDATING = 'updating';
 
     /**
-     * Search by failed videos
+     * List only videos with status failed.
      * @var string
      */
     const STATUSFILTER_FAILED = 'failed';
@@ -122,11 +122,12 @@ class Lists extends Api
      */
     protected $path = '/videos/list';
 
+    private $mediaFilters = array();
+    private $statusFilters = array();
+
     /**
      * (optional)
-     * Tags search mode:
-     * TAGS_ALL: A video will only be listed if it has all tags specified in the tags parameter.
-     * TAGS_ANY: A video will be listed if it has at least one tag specified in the tags parameter.
+     * Tags search mode
      *
      * @param  string $mode
      * @return Lists
@@ -135,22 +136,17 @@ class Lists extends Api
      */
     public function setTagsMode($mode = self::TAGS_ALL)
     {
-        if (in_array($mode, self::$tagsmodes)) {
-            $this->setGet('tags_mode', $mode);
-
-            return $this;
+        if (! in_array($mode, self::$tagsmodes)) {
+            throw new \InvalidArgumentException('Mode ' . $mode . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Mode ' . $mode . ' is invalid');
-
+        $this->setGet('tags_mode', $mode);
+        return $this;
     }
 
     /**
      * (optional)
-     * List only videos with the specified media types. Filter string can include the following media types:
-     * MEDIAFILTER_UNKNOWN: List only videos with media type unknown.
-     * MEDIAFILTER_AUDIO: List only videos with media type audio.
-     * MEDIAFILTER_VIDEO: List only videos with media type video.
+     * List only videos with the specified media types.
      *
      * @param  string $mediafilter
      * @return Lists
@@ -159,23 +155,33 @@ class Lists extends Api
      */
     public function setMediaTypesFilter($mediafilter = self::MEDIAFILTER_VIDEO)
     {
-        if (in_array($mediafilter, self::$mediafilters)) {
-            $this->setGet('mediatypes_filter', $mediafilter);
-
-            return $this;
+        if (! in_array($mediafilter, self::$mediafilters)) {
+            throw new \InvalidArgumentException('Media type filter: ' . $mediafilter . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Media type filter: ' . $mediafilter . ' is invalid');
+        $this->mediaFilters[] = $mediafilter;
+        return $this;
     }
 
     /**
      * (optional)
-     * List only videos with the specified statuses. Filter string can include the following statuses:
-     * STATUSFILTER_READY: List only videos with status ready.
-     * STATUSFILTER_CREATED: List only videos with status created.
-     * STATUSFILTER_PROCCESSING: List only videos with status processing.
-     * STATUSFILTER_UPDATING: List only videos with status updating.
-     * STATUSFILTER_FAILED: List only videos with status failed.
+     * @see setMediaTypesFilter
+     *
+     * @param array $mediafilters
+     * @return $this
+     */
+    public function addMediaTypesFilters(array $mediafilters)
+    {
+        foreach($mediafilters as $filter) {
+            $this->setMediaTypesFilter($filter);
+        }
+
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * List only videos with the specified statuses.
      *
      * @param  string $statusfilter
      * @return Lists
@@ -184,13 +190,28 @@ class Lists extends Api
      */
     public function setStatusFilter($statusfilter = self::STATUSFILTER_READY)
     {
-        if (in_array($statusfilter, self::$statusfilters)) {
-            $this->setGet('statuses_filter', $statusfilter);
-
-            return $this;
+        if (! in_array($statusfilter, self::$statusfilters)) {
+            throw new \InvalidArgumentException('Status filter: ' . $statusfilter . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Status filter: ' . $statusfilter . ' is invalid');
+        $this->statusFilters[] = $statusfilter;
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * @see setStatusFilter
+     *
+     * @param array $statusfilters
+     * @return $this
+     */
+    public function addStatusFilters(array $statusfilters)
+    {
+        foreach($statusfilters as $filter) {
+            $this->setStatusFilter($filter);
+        }
+
+        return $this;
     }
 
     /**
@@ -199,6 +220,16 @@ class Lists extends Api
     protected function beforeRun()
     {
         $this->beforeTags();
+        $this->beforeOrderBy();
+
+        if ($this->statusFilters) {
+            $this->setGet('statuses_filter', implode(',', $this->statusFilters));
+        }
+
+        if ($this->mediaFilters) {
+            $this->setGet('mediatypes_filter', implode(',', $this->mediaFilters));
+        }
+
     }
 
 }
