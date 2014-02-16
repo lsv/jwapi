@@ -7,14 +7,14 @@ php:
 before_script:
   - curl -s https://getcomposer.org/installer | php
   - php composer.phar install --dev
-  - mkdir -p build/coverage
-  - mkdir -p build/logs
 
 script:
+  - mkdir -p ./build/coverage
+  - mkdir -p ./build/logs
   - vendor/bin/phpunit -c ./phpunit.dist.xml
 
 after_script:
-  - php vendor/bin/coveralls
+  - php vendor/bin/coveralls -v
 
 notifications:
   email: martin.aarhof@gmail.com
