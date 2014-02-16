@@ -22,6 +22,7 @@ class VideosListsTest extends TestClass
             ->setResultLimit(1)
             ->setResultOffset(1)
             ->setOrderBy('title', 'desc')
+            ->setTags(array('tag1', 'tag2'))
         ;
 
         $url = parse_url($obj->send()->getEffectiveUrl());
@@ -33,7 +34,8 @@ class VideosListsTest extends TestClass
             'statuses_filter' => Lists::STATUSFILTER_CREATED,
             'order_by' => urlencode('title:desc'),
             'start_date' => $date1->getTimestamp(),
-            'end_date' => $date2->getTimestamp()
+            'end_date' => $date2->getTimestamp(),
+            'tags' => 'tag1,tag2'
         );
 
         $this->checkUrlValues($url, $values);
