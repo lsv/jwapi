@@ -13,9 +13,6 @@ script:
   - mkdir -p ./build/logs
   - vendor/bin/phpunit -c ./phpunit.dist.xml
 
-after_script:
-  - php vendor/bin/coveralls -v
-
 notifications:
   email: martin.aarhof@gmail.com
 

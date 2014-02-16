@@ -35,6 +35,9 @@ class Update extends Api
      */
     protected $fileupload = 'thumbnail';
 
+    /**
+     * {@inherit}
+     */
     protected $requiredPost = array(
         'file'
     );
