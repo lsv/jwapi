@@ -13,22 +13,7 @@ abstract class TestClass extends \PHPUnit_Framework_TestCase
         parent::__construct();
     }
 
-    protected function getFiledownloadUrlName()
-    {
-        return 'test_download_' . $this->getVersion();
-    }
-
-    protected function getFileuploadUrlName()
-    {
-        return 'test_upload_' . $this->getVersion();
-    }
-
-    protected function getuploadAfterUrlName()
-    {
-        return 'test_updated_' . $this->getVersion();
-    }
-
-    private function getVersion()
+    protected function getVersion()
     {
         return PHP_MAJOR_VERSION . PHP_MINOR_VERSION . PHP_RELEASE_VERSION;
     }

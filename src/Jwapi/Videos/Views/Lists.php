@@ -10,7 +10,6 @@
  */
 namespace Jwapi\Videos\Views;
 
-use Guzzle\Http\Message\Response;
 use Jwapi\Api\Api;
 use Jwapi\Traits;
 
@@ -144,6 +143,14 @@ class Lists extends Api
         $this->setGet('include_empty_days', $this->setBoolean($includeEmptyDays));
 
         return $this;
+    }
+
+    /**
+     * {@inherit}
+     */
+    protected function beforeRun()
+    {
+        $this->beforeOrderBy();
     }
 
 }

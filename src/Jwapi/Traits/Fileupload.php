@@ -33,7 +33,7 @@ trait Fileupload
     /**
      * {@inherit}
      */
-    protected function afterFile()
+    protected function afterRun()
     {
         if ($this->file instanceof SplFileInfo) {
             $upload = new Upload($this, $this->file, $this->fileupload);

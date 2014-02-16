@@ -30,4 +30,12 @@ class Lists extends Api
      */
     protected $path = '/videos/tags/list';
 
+    /**
+     * {@inherit}
+     */
+    protected function beforeRun()
+    {
+        $this->beforeOrderBy();
+    }
+
 }
