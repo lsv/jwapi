@@ -19,7 +19,7 @@ use Jwapi\Traits;
  */
 class Delete extends Api
 {
-    //use Traits\VideoKey;
+    use Traits\VideoKey;
 
     /**
      * {@inherit}
@@ -33,17 +33,4 @@ class Delete extends Api
         'video_key'
     );
 
-    /**
-     * (required)
-     * Key of the video you want data for.
-     *
-     * @param string $key
-     *                    @return $this
-     */
-    public function setVideoKey($key)
-    {
-        $this->setGet('video_key', $key);
-
-        return $this;
-    }
 }

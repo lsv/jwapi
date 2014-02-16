@@ -18,7 +18,7 @@ use Jwapi\Traits;
  */
 class Update extends Create
 {
-    //use Traits\VideoKey;
+    use Traits\VideoKey;
 
     /**
      * {@inherit}
@@ -26,18 +26,11 @@ class Update extends Create
     protected $path = '/videos/update';
 
     /**
-     * (required)
-     * Key of the video you want data for.
-     *
-     * @param string $key
-     *                    @return $this
+     * {@inherit}
      */
-    public function setVideoKey($key)
-    {
-        $this->setGet('video_key', $key);
-
-        return $this;
-    }
+    protected $required = array(
+        'video_key'
+    );
 
     /**
      * {@inherit}
