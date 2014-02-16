@@ -11,6 +11,7 @@
 namespace Jwapi\Videos\Engagement;
 
 use Jwapi\Api\Api;
+use Jwapi\Traits;
 
 /**
  * Displays engagement analytics for a single video.
@@ -18,7 +19,7 @@ use Jwapi\Api\Api;
  */
 class Show extends Api
 {
-    //use Traits\VideoKey;
+    use Traits\VideoKey;
 
     /**
      * {@inherit}
@@ -26,16 +27,10 @@ class Show extends Api
     protected $path = '/videos/engagement/show';
 
     /**
-     * (required)
-     * Key of the video you want data for.
-     *
-     * @param string $key
-     *                    @return $this
+     * {@inherit}
      */
-    public function setVideoKey($key)
-    {
-        $this->setGet('video_key', $key);
+    protected $required = array(
+        'video_key'
+    );
 
-        return $this;
-    }
 }

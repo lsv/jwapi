@@ -20,6 +20,12 @@ trait Limits
 {
 
     /**
+     * Max limits of results
+     * @var int
+     */
+    protected $maxlimit = 1000;
+
+    /**
      * (optional)
      * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
      *
@@ -29,8 +35,8 @@ trait Limits
      */
     public function setResultLimit($limit)
     {
-        if ((int) $limit > self::MAXLIMIT) {
-            throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
+        if ((int) $limit > $this->maxlimit) {
+            throw new \Exception('Max ' . $this->maxlimit . ' results is allowed');
         }
 
         $this->setGet('result_limit', (int) $limit);

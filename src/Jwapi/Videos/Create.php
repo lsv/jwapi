@@ -22,8 +22,9 @@ use Jwapi\Traits;
  */
 class Create extends Api
 {
-    //use Traits\Tags;
-    //use Traits\Fileupload;
+    use Traits\Tags;
+    use Traits\CustomParameters;
+    use Traits\Fileupload;
 
     /**
      * {@inherit}
@@ -35,71 +36,6 @@ class Create extends Api
      * @var string
      */
     protected $fileupload = 'video';
-
-    /**
-     * Tags
-     * @var array
-     */
-    protected $tags = array();
-
-    /**
-     * Custom parameters
-     * @var array
-     */
-    private $customParameters = array();
-
-    /**
-     * {@inherit}
-     */
-    protected $requiredPost = array(
-        'file'
-    );
-
-    /**
-     * File
-     * @var SplFileInfo
-     */
-    protected $file;
-
-    /**
-     * (optional)
-     * Set multiple tags
-     *
-     * @param  array $tags
-     * @return Tags
-     */
-    public function setTags(array $tags)
-    {
-        foreach ($tags as $tag) {
-            $this->addTag($tag);
-        }
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * Add a single tag
-     *
-     * @param  string $tag
-     * @return Tags
-     */
-    public function addTag($tag)
-    {
-        $this->tags[] = $tag;
-
-        return $this;
-    }
-
-    /**
-     * Run before actual request
-     */
-    protected function beforeTags()
-    {
-        if ($this->tags) {
-            $this->setGet('tags', implode(',', $this->tags), false);
-        }
-    }
 
     /**
      * (optional)
@@ -188,67 +124,6 @@ class Create extends Api
 
     /**
      * (optional)
-     * User defined parameter
-     *
-     * name can contain letters, numbers and punctuation characters ‘.’, ‘_’, ‘-‘
-     * name cannot start with a number or punctuation character
-     * name cannot contain spaces
-     *
-     * @param  string $key
-     * @param  string $value
-     * @return Create
-     *
-     * @throws \Exception
-     */
-    public function addCustomParameter($key, $value)
-    {
-        $m = ! preg_match('#^[^a-zA-Z]{1}#', $key, $matches);
-        if ($m !== true) {
-            throw new \Exception('Custom parameter name may only start with (a-z A-Z)');
-        }
-
-        $m = ! preg_match('#([^a-zA-Z0-9\._-])#', $key, $matches);
-        if ($m !== true) {
-            throw new \Exception('Custom parameter name may only contain (a-z A-Z 0-9 . _ -)');
-        }
-
-        $this->customParameters[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * User defined parameter
-     *
-     * @see addCustomParameter
-     *
-     * @param  array  $parameters
-     * @return Create
-     */
-    public function setCustomParameters(array $parameters)
-    {
-        foreach ($parameters as $k => $v) {
-            $this->addCustomParameter($k, $v);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inherit}
-     */
-    protected function beforeCustomParameters()
-    {
-        if ($this->customParameters) {
-            foreach ($this->customParameters as $k => $v) {
-                $this->setGet(urlencode('custom.' . $k), $v);
-            }
-        }
-    }
-
-    /**
-     * (optional)
      * Video file MD5 message digest. If supplied and resumable option is set to False,
      * it will be compared with the MD5 digest calculated for the received video file.
      * Uploaded video will be rejected if MD5 message digests do not match.
@@ -327,17 +202,4 @@ class Create extends Api
 
     }
 
-    /**
-     * {@inherit}
-     */
-    protected function afterRun()
-    {
-        if ($this->file instanceof SplFileInfo) {
-            $upload = new Upload($this, $this->file, $this->fileupload);
-
-            return $upload->send(false);
-        }
-
-        return parent::afterRun();
-    }
 }
