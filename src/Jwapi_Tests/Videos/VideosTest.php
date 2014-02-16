@@ -4,15 +4,12 @@ namespace Jwapi_Tests\Videos;
 use Jwapi\Videos\Create;
 use Jwapi\Videos\Delete;
 use Jwapi\Videos\Lists;
+use Jwapi\Videos\Show;
 use Jwapi\Videos\Update;
 use Jwapi_Tests\TestClass;
 
 class VideosTest extends TestClass
 {
-
-    const FileDownloadUrlName = 'test_canCreateDownloadUrl';
-    const FileUploadUrlName = 'test_canCreateUploadUrl';
-    const FileUploadAfterUpdate = 'test_updatedFilename';
 
     public function test_canCreateDownloadUrl()
     {
@@ -25,7 +22,7 @@ class VideosTest extends TestClass
             ->setDate($date)
             ->setDescription('desc')
             ->setLink('http://barfoo.com')
-            ->setTitle(self::FileDownloadUrlName)
+            ->setTitle($this->getFiledownloadUrlName())
             ->setDownloadUrl($this->getMp4VideoFileUrl())
             ->setMd5(md5($videofile))
             ->isResumeable(true)
@@ -40,7 +37,7 @@ class VideosTest extends TestClass
             'author' => 'Author',
             'date' => $date->getTimestamp(),
             'description' => 'desc',
-            'title' => self::FileDownloadUrlName,
+            'title' => $this->getFiledownloadUrlName(),
             'tags' => 'testtag_1,testtag_2,testtag_3',
             'download_url' => urlencode($this->getMp4VideoFileUrl()),
             'link' => urlencode('http://barfoo.com'),
@@ -63,8 +60,9 @@ class VideosTest extends TestClass
             ->setAuthor('Author')
             ->setDate($date)
             ->setDescription('desc')
-            ->setTitle(self::FileUploadUrlName)
+            ->setTitle($this->getFileuploadUrlName())
             ->setVideoFile($this->getMp4VideoFile())
+            ->setCustomParameters(array('custom1' => 'custom1'))
             ->addTag('testtag_1')
         ;
 
@@ -91,6 +89,15 @@ class VideosTest extends TestClass
     }
 
     /**
+     * @expectedException \Exception
+     */
+    public function test_CreateVideoWithFalseCustomParametersKey()
+    {
+        $obj = new Create($this->getApiKey(), $this->getApiSecret());
+        $obj->addCustomParameter('cust#om1', 'custom1');
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      */
     public function test_CantSetBothDownloadAndVideo()
@@ -110,7 +117,7 @@ class VideosTest extends TestClass
     {
         // Find movie
         $obj = new Lists($this->getApiKey(), $this->getApiSecret());
-        $obj->setSearch(self::FileDownloadUrlName);
+        $obj->setSearch($this->getFiledownloadUrlName());
         $response = $obj->send()->json();
         $this->validateResponse($response, 'Could not "Find movie" from: test_DeleteCreatedFile');
         $this->assertArrayHasKey('videos', $response);
@@ -125,7 +132,7 @@ class VideosTest extends TestClass
 
         // Recheck if deleted
         $obj = new Lists($this->getApiKey(), $this->getApiSecret());
-        $obj->setSearch(self::FileDownloadUrlName);
+        $obj->setSearch($this->getFiledownloadUrlName());
         $response = $obj->send()->json();
         $this->validateResponse($response, 'Could not "Recheck if deleted" from: test_DeleteCreatedFile');
         $this->assertArrayHasKey('videos', $response);
@@ -134,33 +141,65 @@ class VideosTest extends TestClass
 
     /**
      * @depends test_canUploadMovie
+     * @expectedException \InvalidArgumentException
      */
-    public function test_canDeleteUploadMovie()
+    public function test_cantUpdateMovieWithBothUrlAndDownload()
     {
         // Find movie
         $obj = new Lists($this->getApiKey(), $this->getApiSecret());
-        $obj->setSearch(self::FileUploadUrlName);
+        $obj->setSearch($this->getFileuploadUrlName());
         $response = $obj->send()->json();
 
         $this->validateResponse($response, 'Could not "Find movie" from: test_DeleteUploadedFile');
         $this->assertArrayHasKey('videos', $response);
-        $this->assertCount(1, $response['videos'], 'No file with name ' . self::FileUploadUrlName);
+        $this->assertCount(1, $response['videos'], 'No file with name ' . $this->getFileuploadUrlName());
         $key = $response['videos'][0]['key'];
 
         // Update movie
         $obj = new Update($this->getApiKey(), $this->getApiSecret());
         $obj->setVideoKey($key);
-        $obj->setTitle(self::FileUploadAfterUpdate);
+        $obj->setDownloadUrl($this->getOgvVideoFileUrl());
+        $obj->setVideoFile($this->getOgvVideoFile());
+        $response = $obj->send()->json();
+    }
+
+    /**
+     * @depends test_cantUpdateMovieWithBothUrlAndDownload
+     */
+    public function test_canDeleteUploadMovie()
+    {
+        // Find movie
+        $obj = new Lists($this->getApiKey(), $this->getApiSecret());
+        $obj->setSearch($this->getFileuploadUrlName());
+        $response = $obj->send()->json();
+
+        $this->validateResponse($response, 'Could not "Find movie" from: test_DeleteUploadedFile');
+        $this->assertArrayHasKey('videos', $response);
+        $this->assertCount(1, $response['videos'], 'No file with name ' . $this->getFileuploadUrlName());
+        $key = $response['videos'][0]['key'];
+
+        // Update movie
+        $obj = new Update($this->getApiKey(), $this->getApiSecret());
+        $obj->setVideoKey($key);
+        $obj->setTitle($this->getuploadAfterUrlName());
         $response = $obj->send()->json();
         $this->validateResponse($response, 'Could not "Update movie" from: test_DeleteUploadedFile');
 
         // Find again
         $obj = new Lists($this->getApiKey(), $this->getApiSecret());
-        $obj->setSearch(self::FileUploadAfterUpdate);
+        $obj->setSearch($this->getuploadAfterUrlName());
         $response = $obj->send()->json();
         $this->validateResponse($response, 'Could not "Find again" from: test_DeleteUploadedFile');
-        $this->assertCount(1, $response['videos'], 'No videos with title ' . self::FileUploadAfterUpdate);
+        $this->assertCount(1, $response['videos'], 'No videos with title ' . $this->getuploadAfterUrlName());
         $key = $response['videos'][0]['key'];
+
+        // Show video
+        $obj = new Show($this->getApiKey(), $this->getApiSecret());
+        $obj->setVideoKey($key);
+        $response = $obj->send()->json();
+        $this->validateResponse($response, 'Could not "Show video" from: test_DeleteUploadedFile');
+        $this->assertArrayHasKey('video', $response);
+        $this->assertArrayHasKey('mediatype', $response['video']);
 
         // Delete movie
         $deleter = new Delete($this->getApiKey(), $this->getApiSecret());
@@ -170,7 +209,7 @@ class VideosTest extends TestClass
 
         // Recheck if deleted
         $obj = new Lists($this->getApiKey(), $this->getApiSecret());
-        $obj->setSearch(self::FileUploadAfterUpdate);
+        $obj->setSearch($this->getuploadAfterUrlName());
         $response = $obj->send()->json();
         $this->validateResponse($response, 'Could not "Recheck if deleted" from: test_DeleteUploadedFile');
         $this->assertArrayHasKey('status', $response);

@@ -199,11 +199,14 @@ class Create extends Api
      */
     public function addCustomParameter($key, $value)
     {
-        $m1 = ! preg_match('#^[^a-zA-Z]{1}#', $key, $matches);
-        $m2 = ! preg_match('#([^a-zA-Z0-9\._-])#', $key, $matches);
+        $m = ! preg_match('#^[^a-zA-Z]{1}#', $key, $matches);
+        if ($m !== true) {
+            throw new \Exception('Custom parameter name may only start with (a-z A-Z)');
+        }
 
-        if (! $m1 || ! $m2) {
-            throw new \Exception('Custom parameter name cant start with (. 0-9), and may only contain (._- a-Z 0-9)');
+        $m = ! preg_match('#([^a-zA-Z0-9\._-])#', $key, $matches);
+        if ($m !== true) {
+            throw new \Exception('Custom parameter name may only contain (a-z A-Z 0-9 . _ -)');
         }
 
         $this->customParameters[$key] = $value;
