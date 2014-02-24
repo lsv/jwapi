@@ -18,6 +18,12 @@ trait OrderBy
 {
 
     /**
+     * Order By options
+     * @var array
+     */
+    protected $orders = array();
+
+    /**
      * (optional)
      * Specifies parameters by which returned result should be ordered.
      * Default sort order is ascending and can be omitted.
@@ -29,9 +35,17 @@ trait OrderBy
      */
     public function setOrderBy($orderBy, $order = 'asc')
     {
-        $this->setGet('order_by', $orderBy . ':' . $order);
-
+        $this->orders[] = $orderBy . ':' . $order;
         return $this;
     }
 
+    /**
+     * Runs just before the request
+     */
+    protected function beforeOrderBy()
+    {
+        if ($this->orders) {
+            $this->setGet('order_by', implode(',', $this->orders));
+        }
+    }
 }

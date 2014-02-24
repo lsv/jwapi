@@ -20,29 +20,23 @@ use Jwapi\Traits;
  */
 class Lists extends Api
 {
-    //use Traits\Tags;
-    //use Traits\Limits;
-    //use Traits\Dates;
-    //use Traits\OrderBy;
-    //use Traits\Search;
+    use Traits\Tags;
+    use Traits\Limits;
+    use Traits\Dates;
+    use Traits\OrderBy;
+    use Traits\Search;
 
     /**
-     * Search by all tags
+     * A video will only be listed if it has all tags specified in the tags parameter.
      * @var string
      */
     const TAGS_ALL = 'all';
 
     /**
-     * Search by any tags
+     * A video will be listed if it has at least one tag specified in the tags parameter.
      * @var string
      */
     const TAGS_ANY = 'any';
-
-    /**
-     * Tags
-     * @var array
-     */
-    protected $tags = array();
 
     /**
      * Tag modes
@@ -54,19 +48,19 @@ class Lists extends Api
     );
 
     /**
-     * Search by unknown medias
+     * List only videos with media type unknown.
      * @var string
      */
     const MEDIAFILTER_UNKNOWN = 'unknown';
 
     /**
-     * Search by audio medias
+     * List only videos with media type audio.
      * @var string
      */
     const MEDIAFILTER_AUDIO = 'audio';
 
     /**
-     * Search by video medias
+     * List only videos with media type video.
      * @var string
      */
     const MEDIAFILTER_VIDEO = 'video';
@@ -82,31 +76,31 @@ class Lists extends Api
     );
 
     /**
-     * Search by created videos
+     * List only videos with status created.
      * @var string
      */
     const STATUSFILTER_CREATED = 'created';
 
     /**
-     * Search by processing videos
+     * List only videos with status processing.
      * @var string
      */
     const STATUSFILTER_PROCESSING = 'processing';
 
     /**
-     * Search by ready videos
+     * List only videos with status ready.
      * @var string
      */
     const STATUSFILTER_READY = 'ready';
 
     /**
-     * Search by updating videos
+     * List only videos with status updating.
      * @var string
      */
     const STATUSFILTER_UPDATING = 'updating';
 
     /**
-     * Search by failed videos
+     * List only videos with status failed.
      * @var string
      */
     const STATUSFILTER_FAILED = 'failed';
@@ -124,21 +118,16 @@ class Lists extends Api
     );
 
     /**
-     * Maximum limit
-     * @var integer
-     */
-    const MAXLIMIT = 1000;
-
-    /**
      * {@inherit}
      */
     protected $path = '/videos/list';
 
+    private $mediaFilters = array();
+    private $statusFilters = array();
+
     /**
      * (optional)
-     * Tags search mode:
-     * TAGS_ALL: A video will only be listed if it has all tags specified in the tags parameter.
-     * TAGS_ANY: A video will be listed if it has at least one tag specified in the tags parameter.
+     * Tags search mode
      *
      * @param  string $mode
      * @return Lists
@@ -147,22 +136,17 @@ class Lists extends Api
      */
     public function setTagsMode($mode = self::TAGS_ALL)
     {
-        if (in_array($mode, self::$tagsmodes)) {
-            $this->setGet('tags_mode', $mode);
-
-            return $this;
+        if (! in_array($mode, self::$tagsmodes)) {
+            throw new \InvalidArgumentException('Mode ' . $mode . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Mode ' . $mode . ' is invalid');
-
+        $this->setGet('tags_mode', $mode);
+        return $this;
     }
 
     /**
      * (optional)
-     * List only videos with the specified media types. Filter string can include the following media types:
-     * MEDIAFILTER_UNKNOWN: List only videos with media type unknown.
-     * MEDIAFILTER_AUDIO: List only videos with media type audio.
-     * MEDIAFILTER_VIDEO: List only videos with media type video.
+     * List only videos with the specified media types.
      *
      * @param  string $mediafilter
      * @return Lists
@@ -171,23 +155,33 @@ class Lists extends Api
      */
     public function setMediaTypesFilter($mediafilter = self::MEDIAFILTER_VIDEO)
     {
-        if (in_array($mediafilter, self::$mediafilters)) {
-            $this->setGet('mediatypes_filter', $mediafilter);
-
-            return $this;
+        if (! in_array($mediafilter, self::$mediafilters)) {
+            throw new \InvalidArgumentException('Media type filter: ' . $mediafilter . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Media type filter: ' . $mediafilter . ' is invalid');
+        $this->mediaFilters[] = $mediafilter;
+        return $this;
     }
 
     /**
      * (optional)
-     * List only videos with the specified statuses. Filter string can include the following statuses:
-     * STATUSFILTER_READY: List only videos with status ready.
-     * STATUSFILTER_CREATED: List only videos with status created.
-     * STATUSFILTER_PROCCESSING: List only videos with status processing.
-     * STATUSFILTER_UPDATING: List only videos with status updating.
-     * STATUSFILTER_FAILED: List only videos with status failed.
+     * @see setMediaTypesFilter
+     *
+     * @param array $mediafilters
+     * @return $this
+     */
+    public function addMediaTypesFilters(array $mediafilters)
+    {
+        foreach($mediafilters as $filter) {
+            $this->setMediaTypesFilter($filter);
+        }
+
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * List only videos with the specified statuses.
      *
      * @param  string $statusfilter
      * @return Lists
@@ -196,13 +190,28 @@ class Lists extends Api
      */
     public function setStatusFilter($statusfilter = self::STATUSFILTER_READY)
     {
-        if (in_array($statusfilter, self::$statusfilters)) {
-            $this->setGet('statuses_filter', $statusfilter);
-
-            return $this;
+        if (! in_array($statusfilter, self::$statusfilters)) {
+            throw new \InvalidArgumentException('Status filter: ' . $statusfilter . ' is invalid');
         }
 
-        throw new \InvalidArgumentException('Status filter: ' . $statusfilter . ' is invalid');
+        $this->statusFilters[] = $statusfilter;
+        return $this;
+    }
+
+    /**
+     * (optional)
+     * @see setStatusFilter
+     *
+     * @param array $statusfilters
+     * @return $this
+     */
+    public function addStatusFilters(array $statusfilters)
+    {
+        foreach($statusfilters as $filter) {
+            $this->setStatusFilter($filter);
+        }
+
+        return $this;
     }
 
     /**
@@ -211,194 +220,16 @@ class Lists extends Api
     protected function beforeRun()
     {
         $this->beforeTags();
-    }
+        $this->beforeOrderBy();
 
-    /**
-     * (optional)
-     * Set multiple tags
-     *
-     * @param  array $tags
-     * @return Lists
-     */
-    public function setTags(array $tags)
-    {
-        foreach ($tags as $tag) {
-            $this->addTag($tag);
+        if ($this->statusFilters) {
+            $this->setGet('statuses_filter', implode(',', $this->statusFilters));
         }
 
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * Add a single tag
-     *
-     * @param  string $tag
-     * @return Lists
-     */
-    public function addTag($tag)
-    {
-        $this->tags[] = $tag;
-
-        return $this;
-    }
-
-    /**
-     * Run before actual request
-     */
-    protected function beforeTags()
-    {
-        if ($this->tags) {
-            $this->setGet('tags', implode(',', $this->tags), false);
-        }
-    }
-
-    /**
-     * (optional)
-     * Specifies maximum number of items to return. Default is 50. Maximum result limit is 1000.
-     *
-     * @param  integer    $limit
-     * @return Lists
-     * @throws \Exception
-     */
-    public function setResultLimit($limit)
-    {
-        if ((int) $limit > self::MAXLIMIT) {
-            throw new \Exception('Max ' . self::MAXLIMIT . ' results is allowed');
+        if ($this->mediaFilters) {
+            $this->setGet('mediatypes_filter', implode(',', $this->mediaFilters));
         }
 
-        $this->setGet('result_limit', (int) $limit);
-
-        return $this;
     }
 
-    /**
-     * (optional)
-     * Specifies how many items should be skipped at the beginning of the result set. Default is 0.
-     *
-     * @param  integer $offset
-     * @return Lists
-     */
-    public function setResultOffset($offset)
-    {
-        $this->setGet('result_offset', (int) $offset);
-
-        return $this;
-    }
-
-    /**
-     * Get next page of results
-     * Returns null if no next page
-     *
-     * @return null|Response
-     * @throws \Exception
-     */
-    public function getNextResults()
-    {
-        if (! $this->getResponse() instanceof Response) {
-            throw new \Exception('You have not send any query yet');
-        }
-
-        $data = $this->getResponse()->json();
-        $total = (int) $data['total'];
-        $offset = (int) $data['offset'];
-        $limit = (int) $data['limit'];
-
-        if ($total > ($offset + $limit)) {
-            return $this
-                ->setResultOffset($offset + $limit)
-                ->send();
-        }
-
-        return null;
-    }
-
-    /**
-     * Get previous page of results
-     * Returns null if no previous page
-     *
-     * @return null|Response
-     * @throws \Exception
-     */
-    public function getPrevResults()
-    {
-        if (! $this->getResponse() instanceof Response) {
-            throw new \Exception('You have not send any query yet');
-        }
-
-        $data = $this->getResponse()->json();
-        $offset = (int) $data['offset'];
-        $limit = (int) $data['limit'];
-
-        if ($offset > 0) {
-            $newoffset = $offset - $limit;
-
-            return $this
-                ->setResultOffset(($newoffset < 0 ? 0 : $newoffset))
-                ->send();
-        }
-
-        return null;
-    }
-
-    /**
-     * (optional)
-     * UTC date starting from which videos should be returned.
-     * Default is the first day of the current month.
-     *
-     * @param  \DateTime $date
-     * @return Lists
-     */
-    public function setStartDate(\DateTime $date)
-    {
-        $this->setGet('start_date', $date->getTimestamp());
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * UTC date until (and including) which videos should be returned.
-     * Default is today’s date.
-     *
-     * @param  \DateTime $date
-     * @return Lists
-     */
-    public function setEndDate(\DateTime $date)
-    {
-        $this->setGet('end_date', $date->getTimestamp());
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * Specifies parameters by which returned result should be ordered.
-     * Default sort order is ascending and can be omitted.
-     * Multiple parameters should be separated by comma.
-     *
-     * @param  string $orderBy
-     * @param  string $order
-     * @return Lists
-     */
-    public function setOrderBy($orderBy, $order = 'asc')
-    {
-        $this->setGet('order_by', $orderBy . ':' . $order);
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * Set what you want to search for
-     *
-     * @param  string $search
-     * @return Lists
-     */
-    public function setSearch($search)
-    {
-        $this->setGet('search', $search);
-
-        return $this;
-    }
 }

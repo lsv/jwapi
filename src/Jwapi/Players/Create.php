@@ -11,8 +11,8 @@
  */
 namespace Jwapi\Players;
 
-use Jwapi\Traits;
 use Jwapi\Api\Api;
+use Jwapi\Traits;
 
 /**
  * Create video player.
@@ -20,7 +20,7 @@ use Jwapi\Api\Api;
  */
 class Create extends Api
 {
-    //use Traits\CustomParameters;
+    use Traits\CustomParameters;
 
     /**
      * JW Player 5
@@ -331,22 +331,23 @@ class Create extends Api
     );
 
     /**
-     * Custom parameters
-     * @var array
-     */
-    private $customParameters = array();
-
-    /**
      * {@inherit}
      */
     protected $path = '/players/create';
 
     /**
+     * {@inherit}
+     */
+    protected $required = array(
+        'name'
+    );
+
+    /**
      * (required)
      * Name of the video player.
      *
-     * @param $name
-     * @return $this
+     * @param string $name
+     * @return Create
      */
     public function setName($name)
     {
@@ -359,8 +360,8 @@ class Create extends Api
      * (optional)
      * Player version
      *
-     * @param  string                    $version
-     *                                            @return $this
+     * @param  string $version
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setVersion($version = self::VERSION_6)
@@ -379,7 +380,7 @@ class Create extends Api
      * Video player width
      *
      * @param int $width
-     *                   @return $this
+     * @return Create
      */
     public function setWidth($width = 320)
     {
@@ -393,7 +394,7 @@ class Create extends Api
      * Video player height
      *
      * @param int $height
-     *                    @return $this
+     * @return Create
      */
     public function setHeight($height = 260)
     {
@@ -407,7 +408,7 @@ class Create extends Api
      * Key of the skin that should be used by the player
      *
      * @param string $skinkey
-     *                        @return $this
+     * @return Create
      */
     public function setSkin($skinkey)
     {
@@ -421,7 +422,7 @@ class Create extends Api
      * Key of the video conversion template used by this player
      *
      * @param string $template
-     *                         @return $this
+     * @return Create
      */
     public function setTemplateKey($template)
     {
@@ -434,8 +435,8 @@ class Create extends Api
      * (optional)
      * Controlbar position
      *
-     * @param  string                    $controlbar
-     *                                               @return $this
+     * @param  string $controlbar
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setControlbarPosition($controlbar = self::CONTROLBAR_BOTTOM)
@@ -453,8 +454,8 @@ class Create extends Api
      * (optional)
      * Playlist position
      *
-     * @param  string                    $position
-     *                                             @return $this
+     * @param  string $position
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setPlaylistPosition($position = self::PLAYLISTPOSITION_NONE)
@@ -473,7 +474,7 @@ class Create extends Api
      * Playlist size in pixels
      *
      * @param int $size
-     *                  @return $this
+     * @return Create
      */
     public function setPlaylistSize($size = 200)
     {
@@ -486,8 +487,8 @@ class Create extends Api
      * (optional)
      * Defines how videos or thumbnails should be stretched
      *
-     * @param  string                    $stretching
-     *                                               @return $this
+     * @param  string $stretching
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setStretching($stretching = self::STRETCHING_UNIFORM)
@@ -508,7 +509,7 @@ class Create extends Api
      * Set ratio fx '16:9', '16:10', '4:3'
      *
      * @param string $ratio
-     *                      @return $this
+     * @return Create
      */
     public function setAspectratio($ratio = '16:9')
     {
@@ -523,7 +524,7 @@ class Create extends Api
      * Defines whether video playback should start on player load
      *
      * @param boolean $autostart
-     *                           @return $this
+     * @return Create
      */
     public function setAutostart($autostart)
     {
@@ -536,8 +537,8 @@ class Create extends Api
      * (optional)
      * Defines whether player should show related videos:
      *
-     * @param  string                    $related
-     *                                            @return $this
+     * @param  string $related
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setShowRelatedVideos($related = self::RELATED_NONE)
@@ -555,8 +556,8 @@ class Create extends Api
      * (optional)
      * Defines playback repeating behaviour of the player
      *
-     * @param  string                    $repeat
-     *                                           @return $this
+     * @param  string $repeat
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setRepeat($repeat = self::REPEAT_LIST)
@@ -574,9 +575,9 @@ class Create extends Api
      * (optional)
      * Defines how sharing should be shown and what to be shared
      *
-     * @param  string                    $sharing_player Key of the player that should be used for sharing.
-     * @param  string                    $sharing        Defines options for the sharing plugin
-     *                                                   @return $this
+     * @param  string $sharing_player Key of the player that should be used for sharing.
+     * @param  string $sharing        Defines options for the sharing plugin
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setSharing($sharing_player, $sharing = self::SHARING_DOCK)
@@ -596,7 +597,7 @@ class Create extends Api
      * Defines whether integration with the Adobe SiteCatalyst should be enabled
      *
      * @param bool $catalyst
-     *                       @return $this
+     * @return Create
      */
     public function setSiteCatalyst($catalyst = false)
     {
@@ -609,8 +610,8 @@ class Create extends Api
      * (optional)
      * Defines whether player should show video captions
      *
-     * @param  string                    $display
-     *                                            @return $this
+     * @param  string $display
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setDisplayCaption($display = self::CAPTION_OUTLINE)
@@ -632,7 +633,7 @@ class Create extends Api
      * @param  int     $margin    Watermark margin from the both sides of the video player corner
      * @param  string  $position  Watermark position
      * @param  string  $clicklink TTP link to jump to when the watermark image is clicked.
-     * @return $this
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setWatermark($key, $margin = 10, $position = self::WATERMARK_BOTTOM_RIGHT, $clicklink = '')
@@ -656,9 +657,9 @@ class Create extends Api
      * (optional)
      * Set advertising client
      *
-     * @param  string                    $tag    URL of the ad tag that contains the pre-roll ad.
-     * @param  string                    $client Advertising client
-     *                                           @return $this
+     * @param  string $tag    URL of the ad tag that contains the pre-roll ad.
+     * @param  string $client Advertising client
+     * @return Create
      * @throws \InvalidArgumentException
      */
     public function setAdvertisingClient($tag, $client = self::ADVERTISING_NONE)
@@ -677,8 +678,8 @@ class Create extends Api
      * (optional)
      * Google Analytics Web Property ID in the form UA-XXXXX-YY.
      *
-     * @param $code
-     * @return $this
+     * @param string $code
+     * @return Create
      */
     public function setAnalyticscode($code)
     {
@@ -692,71 +693,13 @@ class Create extends Api
      * An ID of a LongTail AdSolution channel.
      *
      * @param string $id
-     *                   @return $this
+     * @return Create
      */
     public function setAdSolutionChannel($id)
     {
         $this->setGet('ltas_channel', $id);
 
         return $this;
-    }
-
-    /**
-     * (optional)
-     * User defined parameter
-     *
-     * name can contain letters, numbers and punctuation characters ‘.’, ‘_’, ‘-‘
-     * name cannot start with a number or punctuation character
-     * name cannot contain spaces
-     *
-     * @param string $key
-     * @param string $value
-     *                      @return $this
-     *
-     * @throws \Exception
-     */
-    public function addCustomParameter($key, $value)
-    {
-        $m1 = ! preg_match('#^[^a-zA-Z]{1}#', $key, $matches);
-        $m2 = ! preg_match('#([^a-zA-Z0-9\._-])#', $key, $matches);
-
-        if (! $m1 || ! $m2) {
-            throw new \Exception('Custom parameter name cant start with (. 0-9), and may only contain (._- a-Z 0-9)');
-        }
-
-        $this->customParameters[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * (optional)
-     * User defined parameter
-     *
-     * @see addCustomParameter
-     *
-     * @param array $parameters
-     *                          @return $this
-     */
-    public function setCustomParameters(array $parameters)
-    {
-        foreach ($parameters as $k => $v) {
-            $this->addCustomParameter($k, $v);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inherit}
-     */
-    protected function beforeCustomParameters()
-    {
-        if ($this->customParameters) {
-            foreach ($this->customParameters as $k => $v) {
-                $this->setGet(urlencode('custom.' . $k), $v);
-            }
-        }
     }
 
     /**
