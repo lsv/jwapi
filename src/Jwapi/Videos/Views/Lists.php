@@ -103,8 +103,8 @@ class Lists extends Api
      */
     public function setGroupByDays($groupbydays = false)
     {
+        $this->setListBy(self::LISTBY_DAY);
         $this->setGet('group_days', $this->setBoolean($groupbydays));
-
         return $this;
     }
 
